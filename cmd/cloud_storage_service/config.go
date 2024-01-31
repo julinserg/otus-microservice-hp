@@ -8,6 +8,7 @@ import "github.com/BurntSushi/toml"
 type Config struct {
 	Logger LoggerConf
 	AMQP   AMQPConfig
+	YDisk  YDiskConfig
 }
 
 type LoggerConf struct {
@@ -17,6 +18,10 @@ type LoggerConf struct {
 
 type AMQPConfig struct {
 	URI string
+}
+
+type YDiskConfig struct {
+	Token string
 }
 
 func (c *Config) Read(fpath string) error {

@@ -1,9 +1,16 @@
 package main
 
 import (
+	"context"
 	"flag"
+	"fmt"
 	"log"
+	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
+
+	yadisk "github.com/nikitaksv/yandex-disk-sdk-go"
 
 	"github.com/julinserg/julinserg/otus-microservice-hw/internal/logger"
 )
@@ -40,12 +47,28 @@ func main() {
 
 	logg := logger.New(config.Logger.Level, f)
 
-	/*ctx, cancel := signal.NotifyContext(context.Background(),
-		syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
-	defer cancel()*/
-
 	logg.Info("cloud_storage_service is running...")
 
+	ctx, cancel := signal.NotifyContext(context.Background(),
+		syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
+	defer cancel()
+	yaDisk, err := yadisk.NewYaDisk(ctx, http.DefaultClient, &yadisk.Token{AccessToken: config.YDisk.Token})
+	if err != nil {
+		panic(err.Error())
+	}
+	disk, err := yaDisk.GetDisk([]string{})
+	if err != nil {
+		panic(err.Error())
+	}
+	fmt.Println("TotalSpace", disk.TotalSpace)
+	fmt.Println("UsedSpace", disk.UsedSpace)
+	l, err := yaDisk.GetFlatFilesList([]string{}, 10, "", 0, false, "", "")
+	if err != nil {
+		panic(err.Error())
+	}
+	for _, item := range l.Items {
+		fmt.Println("Name", item.Name)
+	}
 	/*wg := &sync.WaitGroup{}
 	wg.Add(1)
 	go func() {
