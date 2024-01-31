@@ -2,7 +2,7 @@
 # Binaries for programs and plugins
 /bin
 /log
-/config
+/configs
 *.exe
 *.exe~
 *.dll

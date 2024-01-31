@@ -52,6 +52,7 @@ func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(),
 		syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
 	defer cancel()
+
 	yaDisk, err := yadisk.NewYaDisk(ctx, http.DefaultClient, &yadisk.Token{AccessToken: config.YDisk.Token})
 	if err != nil {
 		panic(err.Error())
