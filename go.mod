@@ -1,4 +1,4 @@
-module github.com/julinserg/julinserg/otus-microservice-hw
+module github.com/julinserg/otus-microservice-hp
 
 replace github.com/imdario/mergo => dario.cat/mergo v1.0.0
 

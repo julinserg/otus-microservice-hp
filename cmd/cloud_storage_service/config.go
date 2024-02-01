@@ -9,6 +9,7 @@ type Config struct {
 	Logger LoggerConf
 	AMQP   AMQPConfig
 	YDisk  YDiskConfig
+	HTTP   HTTPConfig
 }
 
 type LoggerConf struct {
@@ -22,6 +23,11 @@ type AMQPConfig struct {
 
 type YDiskConfig struct {
 	Token string
+}
+
+type HTTPConfig struct {
+	Host string
+	Port string
 }
 
 func (c *Config) Read(fpath string) error {

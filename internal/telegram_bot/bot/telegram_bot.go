@@ -30,6 +30,7 @@ func New(logger Logger, token string, timeoutUpdate int) *TelegramBot {
 		timeoutUpdate: timeoutUpdate,
 	}
 }
+const URI_AUTH_STR = "https://oauth.yandex.ru/authorize?response_type=code&client_id=7c73474791134a019232de6285ca9d34"
 
 func (a *TelegramBot) Start() error {
 
@@ -56,7 +57,7 @@ func (a *TelegramBot) Start() error {
 
 			switch update.Message.Text {
 			case "/start":
-				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Hi, i'm a CloudStorageYSBot.")
+				msg := tgbotapi.NewMessage(update.Message.Chat.ID, URI_AUTH_STR)
 				_, err := bot.Send(msg)
 				if err != nil {
 					a.logger.Error("Bot Send Error: " + err.Error())
