@@ -21,16 +21,19 @@ type TelegramBot struct {
 	logger        Logger
 	token         string
 	timeoutUpdate int
+	clientId      string
 }
 
-func New(logger Logger, token string, timeoutUpdate int) *TelegramBot {
+func New(logger Logger, token string, timeoutUpdate int, clientId string) *TelegramBot {
 	return &TelegramBot{
 		logger:        logger,
 		token:         token,
 		timeoutUpdate: timeoutUpdate,
+		clientId:      clientId,
 	}
 }
-const URI_AUTH_STR = "https://oauth.yandex.ru/authorize?response_type=code&client_id=7c73474791134a019232de6285ca9d34"
+
+const URI_AUTH_STR = "https://oauth.yandex.ru/authorize?response_type=code&client_id="
 
 func (a *TelegramBot) Start() error {
 
@@ -57,7 +60,7 @@ func (a *TelegramBot) Start() error {
 
 			switch update.Message.Text {
 			case "/start":
-				msg := tgbotapi.NewMessage(update.Message.Chat.ID, URI_AUTH_STR)
+				msg := tgbotapi.NewMessage(update.Message.Chat.ID, URI_AUTH_STR+a.clientId)
 				_, err := bot.Send(msg)
 				if err != nil {
 					a.logger.Error("Bot Send Error: " + err.Error())

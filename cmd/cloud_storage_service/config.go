@@ -22,7 +22,9 @@ type AMQPConfig struct {
 }
 
 type YDiskConfig struct {
-	Token string
+	ClientId     string
+	ClientSecret string
+	Token        string
 }
 
 type HTTPConfig struct {

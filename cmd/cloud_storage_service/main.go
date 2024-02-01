@@ -72,7 +72,7 @@ func main() {
 	}*/
 
 	endpointHttp := net.JoinHostPort(config.HTTP.Host, config.HTTP.Port)
-	serverHttp := cloud_storage_internalhttp.NewServer(logg, endpointHttp)
+	serverHttp := cloud_storage_internalhttp.NewServer(logg, endpointHttp, config.YDisk.ClientSecret)
 
 	go func() {
 		<-ctx.Done()

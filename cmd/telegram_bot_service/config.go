@@ -6,6 +6,7 @@ type Config struct {
 	Logger LoggerConf
 	AMQP   AMQPConfig
 	TGBot  TGBotConfig
+	YDisk  YDiskConfig
 }
 
 type LoggerConf struct {
@@ -19,6 +20,12 @@ type AMQPConfig struct {
 type TGBotConfig struct {
 	Token   string
 	Timeout int
+}
+
+type YDiskConfig struct {
+	ClientId     string
+	ClientSecret string
+	Token        string
 }
 
 func (c *Config) Read(fpath string) error {

@@ -29,7 +29,7 @@ func (r *StatusRecorder) WriteHeader(status int) {
 	r.ResponseWriter.WriteHeader(status)
 }
 
-func NewServer(logger Logger, endpoint string) *Server {
+func NewServer(logger Logger, endpoint string, clientSecret string) *Server {
 	mux := http.NewServeMux()
 
 	server := &http.Server{
@@ -37,7 +37,7 @@ func NewServer(logger Logger, endpoint string) *Server {
 		Handler: loggingMiddleware(mux, logger),
 	}
 
-	uh := csHandler{logger: logger}
+	uh := csHandler{logger: logger, clientSecret: clientSecret}
 	mux.HandleFunc("/health", hellowHandler)
 	mux.HandleFunc("/auth", uh.authHandler)
 	return &Server{server, logger, endpoint}

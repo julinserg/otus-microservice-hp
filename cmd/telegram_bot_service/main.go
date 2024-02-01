@@ -48,7 +48,7 @@ func main() {
 
 	logg := logger.New(config.Logger.Level, f)
 
-	tb := telegram_bot.New(logg, config.TGBot.Token, config.TGBot.Timeout)
+	tb := telegram_bot.New(logg, config.TGBot.Token, config.TGBot.Timeout, config.YDisk.ClientId)
 	logg.Info("telegram_bot_service is running...")
 
 	wg := &sync.WaitGroup{}
