@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/julinserg/julinserg/otus-microservice-hw/internal/logger"
-	telegram_bot "github.com/julinserg/julinserg/otus-microservice-hw/internal/telegram_bot/bot"
+	"github.com/julinserg/otus-microservice-hp/internal/logger"
+	telegram_bot "github.com/julinserg/otus-microservice-hp/internal/telegram_bot/bot"
 )
 
 var configFile string

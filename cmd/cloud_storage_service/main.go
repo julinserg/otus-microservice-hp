@@ -11,8 +11,8 @@ import (
 	"syscall"
 	"time"
 
-	cloud_storage_internalhttp "github.com/julinserg/julinserg/otus-microservice-hw/internal/cloud_storage/server/http"
-	"github.com/julinserg/julinserg/otus-microservice-hw/internal/logger"
+	cloud_storage_internalhttp "github.com/julinserg/otus-microservice-hp/internal/cloud_storage/server/http"
+	"github.com/julinserg/otus-microservice-hp/internal/logger"
 )
 
 var configFile string
