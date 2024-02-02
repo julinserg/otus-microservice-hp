@@ -9,6 +9,7 @@ import (
 type SrvAuth interface {
 	RequestTokenByCode(code string, chatId string) error
 	GetToken(chatId string) string
+	GetRequestAuthString() string
 }
 
 type Server struct {
@@ -46,6 +47,7 @@ func NewServer(logger Logger, endpoint string, srvAuth SrvAuth) *Server {
 	mux.HandleFunc("/health", hellowHandler)
 	mux.HandleFunc("/auth", uh.authHandler)
 	mux.HandleFunc("/token", uh.tokenHandler)
+	mux.HandleFunc("/reqstring", uh.reqStringHandler)
 	return &Server{server, logger, endpoint}
 }
 

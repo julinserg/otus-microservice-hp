@@ -3,10 +3,10 @@ package main
 import "github.com/BurntSushi/toml"
 
 type Config struct {
-	Logger LoggerConf
-	AMQP   AMQPConfig
-	TGBot  TGBotConfig
-	YDisk  YDiskConfig
+	Logger  LoggerConf
+	AMQP    AMQPConfig
+	TGBot   TGBotConfig
+	AuthSrv AuthSrvConfig
 }
 
 type LoggerConf struct {
@@ -22,10 +22,8 @@ type TGBotConfig struct {
 	Timeout int
 }
 
-type YDiskConfig struct {
-	ClientId     string
-	ClientSecret string
-	Token        string
+type AuthSrvConfig struct {
+	URI string
 }
 
 func (c *Config) Read(fpath string) error {

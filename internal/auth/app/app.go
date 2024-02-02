@@ -32,6 +32,8 @@ type AuthTokenStruct struct {
 	Scope        string `json:"scope"`
 }
 
+//const URI_AUTH_STR = "https://oauth.yandex.ru/authorize?response_type=code&client_id=%s&state=%d"
+
 func New(logger Logger, clientId string, clientSecret string) *SrvAuth {
 	return &SrvAuth{logger, clientId, clientSecret, make(map[string]string)}
 }
@@ -70,4 +72,8 @@ func (sa *SrvAuth) RequestTokenByCode(code string, chatId string) error {
 
 func (sa *SrvAuth) GetToken(chatId string) string {
 	return sa.tokenStorage[chatId]
+}
+
+func (sa *SrvAuth) GetRequestAuthString() string {
+	return "https://oauth.yandex.ru/authorize?response_type=code&client_id=" + sa.clientId
 }

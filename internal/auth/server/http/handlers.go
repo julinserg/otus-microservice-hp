@@ -66,5 +66,14 @@ func (h *csHandler) tokenHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("{ \"token\" :\"" + token + "\"}"))
+}
 
+func (h *csHandler) reqStringHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		h.returnError(w, "Request is not GET type")
+		return
+	}
+	reqAuthStr := h.srvAuth.GetRequestAuthString()
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(reqAuthStr))
 }

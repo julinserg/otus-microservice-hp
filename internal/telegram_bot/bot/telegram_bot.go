@@ -7,6 +7,10 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
+type SrvBot interface {
+	GetAuthRequestString() (string, error)
+}
+
 type Logger interface {
 	Info(msg string)
 	Error(msg string)
@@ -20,27 +24,25 @@ type Storage interface {
 
 type TelegramBot struct {
 	logger        Logger
-	token         string
+	tokenBot      string
 	timeoutUpdate int
-	clientId      string
+	srvBot        SrvBot
 }
 
-func New(logger Logger, token string, timeoutUpdate int, clientId string) *TelegramBot {
+func New(logger Logger, tokenBot string, timeoutUpdate int, srvBot SrvBot) *TelegramBot {
 	return &TelegramBot{
 		logger:        logger,
-		token:         token,
+		tokenBot:      tokenBot,
 		timeoutUpdate: timeoutUpdate,
-		clientId:      clientId,
+		srvBot:        srvBot,
 	}
 }
-
-const URI_AUTH_STR = "https://oauth.yandex.ru/authorize?response_type=code&client_id=%s&state=%d"
 
 func (a *TelegramBot) Start() error {
 
 	a.logger.Info("start bot...")
 
-	bot, err := tgbotapi.NewBotAPI(a.token)
+	bot, err := tgbotapi.NewBotAPI(a.tokenBot)
 	if err != nil {
 		return err
 	}
@@ -58,11 +60,15 @@ func (a *TelegramBot) Start() error {
 			continue
 		}
 		if reflect.TypeOf(update.Message.Text).Kind() == reflect.String && update.Message.Text != "" {
-
 			switch update.Message.Text {
 			case "/start":
-				msg := tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf(URI_AUTH_STR, a.clientId, update.Message.Chat.ID))
-				_, err := bot.Send(msg)
+				authStr, err := a.srvBot.GetAuthRequestString()
+				if err != nil {
+					a.logger.Error("Get Auth String Error: " + err.Error())
+				}
+				authStr = authStr + "&state=%d"
+				msg := tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf(authStr, update.Message.Chat.ID))
+				_, err = bot.Send(msg)
 				if err != nil {
 					a.logger.Error("Bot Send Error: " + err.Error())
 				}
