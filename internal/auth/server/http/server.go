@@ -1,10 +1,15 @@
-package cloud_storage_internalhttp
+package auth_internalhttp
 
 import (
 	"context"
 	"errors"
 	"net/http"
 )
+
+type SrvAuth interface {
+	RequestTokenByCode(code string, chatId string) error
+	GetToken(chatId string) string
+}
 
 type Server struct {
 	server   *http.Server
@@ -29,7 +34,7 @@ func (r *StatusRecorder) WriteHeader(status int) {
 	r.ResponseWriter.WriteHeader(status)
 }
 
-func NewServer(logger Logger, endpoint string, clientSecret string) *Server {
+func NewServer(logger Logger, endpoint string, srvAuth SrvAuth) *Server {
 	mux := http.NewServeMux()
 
 	server := &http.Server{
@@ -37,9 +42,10 @@ func NewServer(logger Logger, endpoint string, clientSecret string) *Server {
 		Handler: loggingMiddleware(mux, logger),
 	}
 
-	uh := csHandler{logger: logger, clientSecret: clientSecret}
+	uh := csHandler{logger: logger, srvAuth: srvAuth}
 	mux.HandleFunc("/health", hellowHandler)
 	mux.HandleFunc("/auth", uh.authHandler)
+	mux.HandleFunc("/token", uh.tokenHandler)
 	return &Server{server, logger, endpoint}
 }
 

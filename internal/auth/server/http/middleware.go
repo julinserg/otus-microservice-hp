@@ -1,4 +1,4 @@
-package cloud_storage_internalhttp
+package auth_internalhttp
 
 import (
 	"net"

@@ -3,16 +3,15 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"log"
-	"net"
+	"net/http"
 	"os"
 	"os/signal"
-	"sync"
 	"syscall"
-	"time"
 
-	cloud_storage_internalhttp "github.com/julinserg/otus-microservice-hp/internal/cloud_storage/server/http"
 	"github.com/julinserg/otus-microservice-hp/internal/logger"
+	yadisk "github.com/nikitaksv/yandex-disk-sdk-go"
 )
 
 var configFile string
@@ -53,7 +52,7 @@ func main() {
 		syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
 	defer cancel()
 
-	/*yaDisk, err := yadisk.NewYaDisk(ctx, http.DefaultClient, &yadisk.Token{AccessToken: config.YDisk.Token})
+	yaDisk, err := yadisk.NewYaDisk(ctx, http.DefaultClient, &yadisk.Token{AccessToken: config.YDisk.Token})
 	if err != nil {
 		panic(err.Error())
 	}
@@ -69,31 +68,5 @@ func main() {
 	}
 	for _, item := range l.Items {
 		fmt.Println("Name", item.Name)
-	}*/
-
-	endpointHttp := net.JoinHostPort(config.HTTP.Host, config.HTTP.Port)
-	serverHttp := cloud_storage_internalhttp.NewServer(logg, endpointHttp, config.YDisk.ClientSecret)
-
-	go func() {
-		<-ctx.Done()
-
-		ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
-		defer cancel()
-
-		if err := serverHttp.Stop(ctx); err != nil {
-			logg.Error("failed to stop http server: " + err.Error())
-		}
-	}()
-
-	wg := &sync.WaitGroup{}
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		if err := serverHttp.Start(ctx); err != nil {
-			logg.Error("failed to start http server: " + err.Error())
-			cancel()
-			return
-		}
-	}()
-	wg.Wait()
+	}
 }

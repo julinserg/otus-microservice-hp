@@ -1,6 +1,7 @@
 package telegram_bot
 
 import (
+	"fmt"
 	"reflect"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -33,7 +34,7 @@ func New(logger Logger, token string, timeoutUpdate int, clientId string) *Teleg
 	}
 }
 
-const URI_AUTH_STR = "https://oauth.yandex.ru/authorize?response_type=code&client_id="
+const URI_AUTH_STR = "https://oauth.yandex.ru/authorize?response_type=code&client_id=%s&state=%d"
 
 func (a *TelegramBot) Start() error {
 
@@ -60,7 +61,7 @@ func (a *TelegramBot) Start() error {
 
 			switch update.Message.Text {
 			case "/start":
-				msg := tgbotapi.NewMessage(update.Message.Chat.ID, URI_AUTH_STR+a.clientId)
+				msg := tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf(URI_AUTH_STR, a.clientId, update.Message.Chat.ID))
 				_, err := bot.Send(msg)
 				if err != nil {
 					a.logger.Error("Bot Send Error: " + err.Error())
