@@ -8,6 +8,7 @@ import (
 	"sync"
 
 	"github.com/julinserg/otus-microservice-hp/internal/logger"
+	telegram_bot_amqp "github.com/julinserg/otus-microservice-hp/internal/telegram_bot/amqp"
 	telegram_bot_app "github.com/julinserg/otus-microservice-hp/internal/telegram_bot/app"
 	telegram_bot "github.com/julinserg/otus-microservice-hp/internal/telegram_bot/bot"
 )
@@ -49,7 +50,9 @@ func main() {
 
 	logg := logger.New(config.Logger.Level, f)
 
-	srvBot := telegram_bot_app.New(logg, config.AuthSrv.URI)
+	botMQ := telegram_bot_amqp.New(logg, config.AMQP.URI)
+
+	srvBot := telegram_bot_app.New(logg, config.AuthSrv.URI, botMQ)
 
 	tb := telegram_bot.New(logg, config.TGBot.Token, config.TGBot.Timeout, srvBot)
 	logg.Info("telegram_bot_service is running...")

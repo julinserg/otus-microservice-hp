@@ -63,9 +63,9 @@ func (h *csHandler) tokenHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	chatId := r.URL.Query().Get("chat_id")
 	token := h.srvAuth.GetToken(chatId)
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Content-Type", "text/plain; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("{ \"token\" :\"" + token + "\"}"))
+	w.Write([]byte(token))
 }
 
 func (h *csHandler) reqStringHandler(w http.ResponseWriter, r *http.Request) {

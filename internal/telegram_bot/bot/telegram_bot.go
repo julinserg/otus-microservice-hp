@@ -9,6 +9,7 @@ import (
 
 type SrvBot interface {
 	GetAuthRequestString() (string, error)
+	SendFileEvent(url string, chatId int64) error
 }
 
 type Logger interface {
@@ -16,10 +17,6 @@ type Logger interface {
 	Error(msg string)
 	Debug(msg string)
 	Warn(msg string)
-}
-
-type Storage interface {
-	UpdateOrderStatus(idOrder string, status string) error
 }
 
 type TelegramBot struct {
@@ -74,11 +71,15 @@ func (a *TelegramBot) Start() error {
 				}
 			default:
 			}
-		} else {
-			msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Use the words only.")
-			_, err := bot.Send(msg)
+		} else if update.Message.Photo != nil {
+			fileDescript := (*update.Message.Photo)[len(*update.Message.Photo)-1]
+			url, err := bot.GetFileDirectURL(fileDescript.FileID)
 			if err != nil {
-				a.logger.Error("Bot Send Error: " + err.Error())
+				a.logger.Error("GetFileDirectURL Error: " + err.Error())
+			}
+			err = a.srvBot.SendFileEvent(url, update.Message.Chat.ID)
+			if err != nil {
+				a.logger.Error("SendFileEvent Error: " + err.Error())
 			}
 		}
 	}

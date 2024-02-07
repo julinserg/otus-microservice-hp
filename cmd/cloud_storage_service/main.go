@@ -3,15 +3,15 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
 	"log"
-	"net/http"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 
+	cloud_storage_amqp "github.com/julinserg/otus-microservice-hp/internal/cloud_storage/amqp"
+	cloud_storage_app "github.com/julinserg/otus-microservice-hp/internal/cloud_storage/app"
 	"github.com/julinserg/otus-microservice-hp/internal/logger"
-	yadisk "github.com/nikitaksv/yandex-disk-sdk-go"
 )
 
 var configFile string
@@ -46,27 +46,26 @@ func main() {
 
 	logg := logger.New(config.Logger.Level, f)
 
-	logg.Info("cloud_storage_service is running...")
-
 	ctx, cancel := signal.NotifyContext(context.Background(),
 		syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
 	defer cancel()
 
-	yaDisk, err := yadisk.NewYaDisk(ctx, http.DefaultClient, &yadisk.Token{AccessToken: config.YDisk.Token})
-	if err != nil {
-		panic(err.Error())
-	}
-	disk, err := yaDisk.GetDisk([]string{})
-	if err != nil {
-		panic(err.Error())
-	}
-	fmt.Println("TotalSpace", disk.TotalSpace)
-	fmt.Println("UsedSpace", disk.UsedSpace)
-	l, err := yaDisk.GetFlatFilesList([]string{}, 10, "", 0, false, "", "")
-	if err != nil {
-		panic(err.Error())
-	}
-	for _, item := range l.Items {
-		fmt.Println("Name", item.Name)
-	}
+	srvCS := cloud_storage_app.New(logg, config.AuthSrv.URI, ctx, config.Debug.TokenYD)
+
+	csMQ := cloud_storage_amqp.New(logg, config.AMQP.URI, srvCS)
+
+	logg.Info("cloud_storage_service is running...")
+
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		if err := csMQ.StartReceive(ctx); err != nil {
+			logg.Error("failed to start MQ worker(order): " + err.Error())
+			cancel()
+			return
+		}
+	}()
+	wg.Wait()
+
 }

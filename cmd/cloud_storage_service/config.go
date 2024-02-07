@@ -6,10 +6,10 @@ import "github.com/BurntSushi/toml"
 // Организация конфига в main принуждает нас сужать API компонентов, использовать
 // при их конструировании только необходимые параметры, а также уменьшает вероятность циклической зависимости.
 type Config struct {
-	Logger LoggerConf
-	AMQP   AMQPConfig
-	YDisk  YDiskConfig
-	HTTP   HTTPConfig
+	Logger  LoggerConf
+	AMQP    AMQPConfig
+	Debug   DebugConfig
+	AuthSrv AuthSrvConfig
 }
 
 type LoggerConf struct {
@@ -21,15 +21,12 @@ type AMQPConfig struct {
 	URI string
 }
 
-type YDiskConfig struct {
-	ClientId     string
-	ClientSecret string
-	Token        string
+type DebugConfig struct {
+	TokenYD string
 }
 
-type HTTPConfig struct {
-	Host string
-	Port string
+type AuthSrvConfig struct {
+	URI string
 }
 
 func (c *Config) Read(fpath string) error {

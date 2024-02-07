@@ -14,19 +14,29 @@ type Logger interface {
 	Warn(msg string)
 }
 
+type FileEvent struct {
+	ChatId int64  `json:"chat_id"`
+	URL    string `json:"url"`
+}
+
+type BotMQ interface {
+	PublishFileEvent(event FileEvent) error
+}
+
 type SrvBot struct {
 	logger         Logger
 	uriAuthService string
+	botMQ          BotMQ
 }
 
-func New(logger Logger, uriAuthService string) *SrvBot {
-	return &SrvBot{logger, uriAuthService}
+func New(logger Logger, uriAuthService string, botMQ BotMQ) *SrvBot {
+	return &SrvBot{logger, uriAuthService, botMQ}
 }
 
 func (s *SrvBot) GetAuthRequestString() (string, error) {
 	req, err := http.NewRequest(http.MethodGet, s.uriAuthService+"/reqstring", nil)
 	if err != nil {
-		return "", fmt.Errorf("client: could not create request: %s\n", err)
+		return "", fmt.Errorf("client: not create http request: %s\n", err)
 	}
 
 	client := http.Client{
@@ -40,4 +50,9 @@ func (s *SrvBot) GetAuthRequestString() (string, error) {
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	return string(body), nil
+}
+
+func (s *SrvBot) SendFileEvent(url string, chatId int64) error {
+	err := s.botMQ.PublishFileEvent(FileEvent{chatId, url})
+	return err
 }
