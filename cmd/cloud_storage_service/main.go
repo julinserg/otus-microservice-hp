@@ -50,7 +50,7 @@ func main() {
 		syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
 	defer cancel()
 
-	srvCS := cloud_storage_app.New(logg, config.AuthSrv.URI, ctx, config.Debug.TokenYD)
+	srvCS := cloud_storage_app.New(logg, config.AuthSrv.URI, ctx, config.Debug.TokenYD, config.Storage.Folder)
 
 	csMQ := cloud_storage_amqp.New(logg, config.AMQP.URI, srvCS)
 

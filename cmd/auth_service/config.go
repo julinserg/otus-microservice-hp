@@ -24,7 +24,6 @@ type AMQPConfig struct {
 type YDiskConfig struct {
 	ClientId     string
 	ClientSecret string
-	Token        string
 }
 
 type HTTPConfig struct {

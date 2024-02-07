@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"path/filepath"
 	"time"
 
 	yadisk "github.com/nikitaksv/yandex-disk-sdk-go"
@@ -27,10 +28,11 @@ type SrvCloudStorage struct {
 	uriAuthService string
 	ctx            context.Context
 	debugToken     string
+	storageFolder  string
 }
 
-func New(logger Logger, uriAuthService string, ctx context.Context, debugToken string) *SrvCloudStorage {
-	return &SrvCloudStorage{logger, uriAuthService, ctx, debugToken}
+func New(logger Logger, uriAuthService string, ctx context.Context, debugToken string, storageFolder string) *SrvCloudStorage {
+	return &SrvCloudStorage{logger, uriAuthService, ctx, debugToken, storageFolder}
 }
 
 func (s *SrvCloudStorage) DownloadAndSaveToStorage(fileEvent FileEvent) error {
@@ -38,40 +40,17 @@ func (s *SrvCloudStorage) DownloadAndSaveToStorage(fileEvent FileEvent) error {
 	if err != nil {
 		return fmt.Errorf("Error receive token: " + err.Error())
 	}*/
-	/*file, err := s.downloadFile(fileEvent.URL)
-	if err != nil {
-		return fmt.Errorf("Error download file: " + err.Error())
-	}*/
 	yaDisk, err := yadisk.NewYaDisk(s.ctx, http.DefaultClient, &yadisk.Token{AccessToken: s.debugToken})
 	if err != nil {
-		return fmt.Errorf("Error connect to YaDisk: " + err.Error())
+		return fmt.Errorf("Error NewYaDisk: " + err.Error())
 	}
-	disk, err := yaDisk.GetDisk([]string{})
+	//currentDate := time.Now().Format("DD-MM-YYYY")
+	_, fileName := filepath.Split(fileEvent.URL)
+	_, err = yaDisk.UploadExternalResource(s.storageFolder+"/"+fileName, fileEvent.URL, true, nil)
 	if err != nil {
-		return fmt.Errorf("Error get disk info: " + err.Error())
+		return fmt.Errorf("Error UploadExternalResource: " + err.Error())
 	}
-	fmt.Println("TotalSpace", disk.TotalSpace)
-	fmt.Println("UsedSpace", disk.UsedSpace)
 	return nil
-}
-
-func (s *SrvCloudStorage) downloadFile(url string) ([]byte, error) {
-	req, err := http.NewRequest(http.MethodGet, url, nil)
-	if err != nil {
-		return nil, fmt.Errorf("client: not create http request: %s\n", err)
-	}
-
-	client := http.Client{
-		Timeout: 5 * time.Second,
-	}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("client: error making http request: %s\n", err)
-	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	return body, nil
 }
 
 func (s *SrvCloudStorage) getToken(chatId int64) (string, error) {

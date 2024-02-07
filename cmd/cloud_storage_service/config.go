@@ -10,6 +10,7 @@ type Config struct {
 	AMQP    AMQPConfig
 	Debug   DebugConfig
 	AuthSrv AuthSrvConfig
+	Storage CloudStorageConfig
 }
 
 type LoggerConf struct {
@@ -27,6 +28,10 @@ type DebugConfig struct {
 
 type AuthSrvConfig struct {
 	URI string
+}
+
+type CloudStorageConfig struct {
+	Folder string
 }
 
 func (c *Config) Read(fpath string) error {
