@@ -36,17 +36,20 @@ func New(logger Logger, uriAuthService string, ctx context.Context, debugToken s
 }
 
 func (s *SrvCloudStorage) DownloadAndSaveToStorage(fileEvent FileEvent) error {
-	/*token, err := s.getToken(fileEvent.ChatId)
+	token, err := s.getToken(fileEvent.ChatId)
 	if err != nil {
 		return fmt.Errorf("Error receive token: " + err.Error())
-	}*/
-	yaDisk, err := yadisk.NewYaDisk(s.ctx, http.DefaultClient, &yadisk.Token{AccessToken: s.debugToken})
+	}
+	fmt.Println("token: " + token)
+	yaDisk, err := yadisk.NewYaDisk(s.ctx, http.DefaultClient, &yadisk.Token{AccessToken: token})
 	if err != nil {
 		return fmt.Errorf("Error NewYaDisk: " + err.Error())
 	}
-	//currentDate := time.Now().Format("DD-MM-YYYY")
+	currentDate := time.Now()
+	folder := s.storageFolder + "/" + fmt.Sprintf("%02d-%02d-%d", currentDate.Day(), currentDate.Month(), currentDate.Year())
+	yaDisk.CreateResource(folder, nil)
 	_, fileName := filepath.Split(fileEvent.URL)
-	_, err = yaDisk.UploadExternalResource(s.storageFolder+"/"+fileName, fileEvent.URL, true, nil)
+	_, err = yaDisk.UploadExternalResource(folder+"/"+fileName, fileEvent.URL, true, nil)
 	if err != nil {
 		return fmt.Errorf("Error UploadExternalResource: " + err.Error())
 	}
