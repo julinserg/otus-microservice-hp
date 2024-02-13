@@ -9,7 +9,7 @@ import (
 
 type SrvBot interface {
 	GetAuthRequestString() (string, error)
-	SendFileEvent(url string, chatId int64) error
+	SendFileEvent(url string, chatId int64, isDebugMode bool) error
 }
 
 type Logger interface {
@@ -77,7 +77,7 @@ func (a *TelegramBot) Start() error {
 			if err != nil {
 				a.logger.Error("GetFileDirectURL Error: " + err.Error())
 			}
-			err = a.srvBot.SendFileEvent(url, update.Message.Chat.ID)
+			err = a.srvBot.SendFileEvent(url, update.Message.Chat.ID, false)
 			if err != nil {
 				a.logger.Error("SendFileEvent Error: " + err.Error())
 			}

@@ -1,16 +1,22 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"log"
+	"net"
 	"os"
+	"os/signal"
 	"strconv"
 	"sync"
+	"syscall"
+	"time"
 
 	"github.com/julinserg/otus-microservice-hp/internal/logger"
 	telegram_bot_amqp "github.com/julinserg/otus-microservice-hp/internal/telegram_bot/amqp"
 	telegram_bot_app "github.com/julinserg/otus-microservice-hp/internal/telegram_bot/app"
 	telegram_bot "github.com/julinserg/otus-microservice-hp/internal/telegram_bot/bot"
+	telegram_bot_imitation_internalhttp "github.com/julinserg/otus-microservice-hp/internal/telegram_bot/server/http"
 )
 
 var configFile string
@@ -42,6 +48,10 @@ func main() {
 		config.TGBot.Timeout = timeout
 		value, _ = os.LookupEnv("USC_AUTH_URI")
 		config.AuthSrv.URI = value
+		value, _ = os.LookupEnv("USC_DEBUG_HOST")
+		config.Debug.Host = value
+		value, _ = os.LookupEnv("USC_DEBUG_PORT")
+		config.Debug.Port = value
 	}
 
 	f, err := os.OpenFile("telegram_bot_service_logfile.txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0o666)
@@ -57,14 +67,42 @@ func main() {
 	srvBot := telegram_bot_app.New(logg, config.AuthSrv.URI, botMQ)
 
 	tb := telegram_bot.New(logg, config.TGBot.Token, config.TGBot.Timeout, srvBot)
+
+	ctx, cancel := signal.NotifyContext(context.Background(),
+		syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
+	defer cancel()
+
+	endpointHttp := net.JoinHostPort(config.Debug.Host, config.Debug.Port)
+	serverHttp := telegram_bot_imitation_internalhttp.NewServer(logg, endpointHttp, srvBot)
+
+	go func() {
+		<-ctx.Done()
+
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
+		defer cancel()
+
+		if err := serverHttp.Stop(ctx); err != nil {
+			logg.Error("failed to stop http server: " + err.Error())
+		}
+	}()
+
 	logg.Info("telegram_bot_service is running...")
 
 	wg := &sync.WaitGroup{}
-	wg.Add(1)
+	wg.Add(2)
 	go func() {
 		defer wg.Done()
 		if err := tb.Start(); err != nil {
 			logg.Error("failed to start bot: " + err.Error())
+			cancel()
+			return
+		}
+	}()
+	go func() {
+		defer wg.Done()
+		if err := serverHttp.Start(ctx); err != nil {
+			logg.Error("failed to start http server: " + err.Error())
+			cancel()
 			return
 		}
 	}()

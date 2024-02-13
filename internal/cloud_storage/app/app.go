@@ -19,8 +19,9 @@ type Logger interface {
 }
 
 type FileEvent struct {
-	ChatId int64  `json:"chat_id"`
-	URL    string `json:"url"`
+	ChatId      int64  `json:"chat_id"`
+	URL         string `json:"url"`
+	IsDebugMode bool   `json:"is_debug_mode"`
 }
 
 type SrvCloudStorage struct {
@@ -37,7 +38,7 @@ func New(logger Logger, uriAuthService string, ctx context.Context, debugToken s
 
 func (s *SrvCloudStorage) DownloadAndSaveToStorage(fileEvent FileEvent) error {
 	token := ""
-	if len(s.debugToken) != 0 {
+	if fileEvent.IsDebugMode && len(s.debugToken) != 0 {
 		token = s.debugToken
 	} else {
 		var err error

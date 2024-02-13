@@ -15,8 +15,9 @@ type Logger interface {
 }
 
 type FileEvent struct {
-	ChatId int64  `json:"chat_id"`
-	URL    string `json:"url"`
+	ChatId      int64  `json:"chat_id"`
+	URL         string `json:"url"`
+	IsDebugMode bool   `json:"is_debug_mode"`
 }
 
 type BotMQ interface {
@@ -52,7 +53,7 @@ func (s *SrvBot) GetAuthRequestString() (string, error) {
 	return string(body), nil
 }
 
-func (s *SrvBot) SendFileEvent(url string, chatId int64) error {
-	err := s.botMQ.PublishFileEvent(FileEvent{chatId, url})
+func (s *SrvBot) SendFileEvent(url string, chatId int64, isDebugMode bool) error {
+	err := s.botMQ.PublishFileEvent(FileEvent{chatId, url, isDebugMode})
 	return err
 }

@@ -7,6 +7,7 @@ type Config struct {
 	AMQP    AMQPConfig
 	TGBot   TGBotConfig
 	AuthSrv AuthSrvConfig
+	Debug   DebugConfig
 }
 
 type LoggerConf struct {
@@ -24,6 +25,11 @@ type TGBotConfig struct {
 
 type AuthSrvConfig struct {
 	URI string
+}
+
+type DebugConfig struct {
+	Host string
+	Port string
 }
 
 func (c *Config) Read(fpath string) error {
