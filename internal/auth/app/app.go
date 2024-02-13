@@ -39,6 +39,9 @@ func New(logger Logger, clientId string, clientSecret string) *SrvAuth {
 }
 
 func (sa *SrvAuth) RequestTokenByCode(code string, chatId string) error {
+	if len(code) == 0 || len(chatId) == 0 {
+		return fmt.Errorf("Error RequestTokenByCode: request params in null \n")
+	}
 	tokenRequestBody := "grant_type=authorization_code&code=" + code
 	req, err := http.NewRequest(http.MethodPost, "https://oauth.yandex.ru/token", bytes.NewReader([]byte(tokenRequestBody)))
 	if err != nil {
@@ -66,12 +69,22 @@ func (sa *SrvAuth) RequestTokenByCode(code string, chatId string) error {
 	if err != nil {
 		return fmt.Errorf("client: error parth http body: %s\n", err)
 	}
+	if len(tokenStr.AccessToken) == 0 {
+		return fmt.Errorf("Error AccessToken: AccessToken in null \n")
+	}
 	sa.tokenStorage[chatId] = tokenStr.AccessToken
 	return nil
 }
 
-func (sa *SrvAuth) GetToken(chatId string) string {
-	return sa.tokenStorage[chatId]
+func (sa *SrvAuth) GetToken(chatId string) (string, error) {
+	if len(chatId) == 0 {
+		return "", fmt.Errorf("Error GetToken: request params in null \n")
+	}
+	val, ok := sa.tokenStorage[chatId]
+	if !ok {
+		return "", fmt.Errorf("Error GetToken: no token for key %s \n", chatId)
+	}
+	return val, nil
 }
 
 func (sa *SrvAuth) GetRequestAuthString() string {

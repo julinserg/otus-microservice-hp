@@ -8,7 +8,7 @@ import (
 
 type SrvAuth interface {
 	RequestTokenByCode(code string, chatId string) error
-	GetToken(chatId string) string
+	GetToken(chatId string) (string, error)
 	GetRequestAuthString() string
 }
 

@@ -61,8 +61,12 @@ func (h *csHandler) tokenHandler(w http.ResponseWriter, r *http.Request) {
 		h.returnError(w, "Request is not GET type")
 		return
 	}
-	chatId := r.URL.Query().Get("chat_id")
-	token := h.srvAuth.GetToken(chatId)
+	chatId := r.URL.Query().Get("chat_id")	
+	token, err := h.srvAuth.GetToken(chatId)
+	if err != nil {
+		h.returnError(w, err.Error())
+		return
+	}
 	w.Header().Set("Content-Type", "text/plain; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(token))
