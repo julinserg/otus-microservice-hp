@@ -33,6 +33,12 @@ P.S: как план максимум - разместить в облачном
 - Prometheus/Grafana для мониторинга; 
 - RabbitMQ для балансировки нагрузки через очередь сообщений; 
 - RabbitMQ для реализации межсервисного обмена - Event Collaboration паттерна;
-- Postman для тестирования.         
+- Postman для тестирования.
+
+Установка:
+- перед применением манифестов необходимо установить rabbitmq командой:    
+sudo helm install mq-csysbot oci://registry-1.docker.io/bitnamicharts/rabbitmq --set auth.username='guest',auth.password='guest'
+- настроить проброс портов с хоста в кластер кубернетес командой:    
+sudo kubectl port-forward svc/auth-service-service 8099:8099 --address 192.168.49.1
 
 
