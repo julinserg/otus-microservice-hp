@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bot-service-deployment
+  labels:
+    app: bot-service
+spec:
+  selector:
+    matchLabels:
+      app: bot-service
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: bot-service
+    spec:
+      containers:
+        - name: bot-service
+          image: julinserg/telegram_bot_service_csysbot_docker_image
+          env:
+            - name: USC_LOG_LEVEL
+              value: "INFO"
+            - name: USC_AMQP_URI
+              value: "amqp://guest:guest@mq-csysbot-rabbitmq.default.svc.cluster.local:5672/"
+            - name: USC_TGBOT_TOKEN
+              valueFrom:
+                configMapKeyRef:
+                  name: csysbot-configmap
+                  key: tgbottoken
+            - name: USC_TGBOT_TIMEOUT
+              value: "60"
+            - name: USC_AUTH_URI
+              value: "http://auth-service-service:8099"

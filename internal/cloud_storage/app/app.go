@@ -36,9 +36,15 @@ func New(logger Logger, uriAuthService string, ctx context.Context, debugToken s
 }
 
 func (s *SrvCloudStorage) DownloadAndSaveToStorage(fileEvent FileEvent) error {
-	token, err := s.getToken(fileEvent.ChatId)
-	if err != nil {
-		return fmt.Errorf("Error receive token: " + err.Error())
+	token := ""
+	if len(s.debugToken) != 0 {
+		token = s.debugToken
+	} else {
+		var err error
+		token, err = s.getToken(fileEvent.ChatId)
+		if err != nil {
+			return fmt.Errorf("Error receive token: " + err.Error())
+		}
 	}
 	yaDisk, err := yadisk.NewYaDisk(s.ctx, http.DefaultClient, &yadisk.Token{AccessToken: token})
 	if err != nil {
@@ -81,7 +87,7 @@ func (s *SrvCloudStorage) createFolder(yaDisk *yadisk.YaDisk, folder string) err
 }
 
 func (s *SrvCloudStorage) getToken(chatId int64) (string, error) {
-	req, err := http.NewRequest(http.MethodGet, s.uriAuthService+fmt.Sprintf("/token?chat_id=%d", chatId), nil)
+	req, err := http.NewRequest(http.MethodGet, s.uriAuthService+fmt.Sprintf("/api/v1/auth/token?chat_id=%d", chatId), nil)
 	if err != nil {
 		return "", fmt.Errorf("client: not create http request: %s\n", err)
 	}

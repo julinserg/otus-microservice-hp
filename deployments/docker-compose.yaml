@@ -35,6 +35,7 @@ services:
       USC_AMQP_URI: "amqp://guest:guest@rabbit:5672/"
       USC_AUTH_URI: "http://auth_service_csysbot:8099"
       USC_STORAGE_FOLDER: "disk:/Приложения/CloudStorageYSBot"
+      USC_DEBUG_TOKEN: ""
     depends_on:
       rabbit:
         condition: service_healthy

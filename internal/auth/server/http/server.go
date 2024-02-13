@@ -44,10 +44,10 @@ func NewServer(logger Logger, endpoint string, srvAuth SrvAuth) *Server {
 	}
 
 	uh := csHandler{logger: logger, srvAuth: srvAuth}
-	mux.HandleFunc("/health", hellowHandler)
-	mux.HandleFunc("/auth", uh.authHandler)
-	mux.HandleFunc("/token", uh.tokenHandler)
-	mux.HandleFunc("/reqstring", uh.reqStringHandler)
+	mux.HandleFunc("/api/v1/auth/health", hellowHandler)
+	mux.HandleFunc("/api/v1/auth/auth", uh.authHandler)
+	mux.HandleFunc("/api/v1/auth/token", uh.tokenHandler)
+	mux.HandleFunc("/api/v1/auth/reqstring", uh.reqStringHandler)
 	return &Server{server, logger, endpoint}
 }
 

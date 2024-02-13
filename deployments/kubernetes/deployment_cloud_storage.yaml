@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloud-storage-service-deployment
+  labels:
+    app: cloud-storage-service
+spec:
+  selector:
+    matchLabels:
+      app: cloud-storage-service
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: cloud-storage-service
+    spec:
+      containers:
+        - name: cloud-storage-service
+          image: julinserg/cloud_storage_service_csysbot_docker_image
+          env:
+            - name: USC_LOG_LEVEL
+              value: "INFO"
+            - name: USC_AMQP_URI
+              value: "amqp://guest:guest@mq-csysbot-rabbitmq.default.svc.cluster.local:5672/"
+            - name: USC_AUTH_URI
+              value: "http://auth-service-service:8099"
+            - name: USC_STORAGE_FOLDER
+              value: "disk:/Приложения/CloudStorageYSBot"
+            - name: USC_DEBUG_TOKEN
+              valueFrom:
+                configMapKeyRef:
+                  name: csysbot-configmap
+                  key: debugtoken

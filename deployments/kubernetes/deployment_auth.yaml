@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service-deployment
+  labels:
+    app: auth-service
+spec:
+  selector:
+    matchLabels:
+      app: auth-service
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: auth-service
+    spec:
+      containers:
+        - name: auth-service
+          image: julinserg/auth_service_csysbot_docker_image
+          ports:
+            - containerPort: 8099
+          env:
+            - name: USC_LOG_LEVEL
+              value: "INFO"
+            - name: USC_HTTP_HOST
+              value: "0.0.0.0"
+            - name: USC_HTTP_PORT
+              value: "8099"
+            - name: USC_YDISK_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: csysbot-configmap
+                  key: ydiskid
+            - name: USC_YDISK_SECRET
+              valueFrom:
+                configMapKeyRef:
+                  name: csysbot-configmap
+                  key: ydisksecret

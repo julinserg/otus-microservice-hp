@@ -1,15 +1,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: order-service-service
+  name: auth-service-service
   labels:
-    app: order-service
+    app: auth-service
 spec:
   selector:
-    app: order-service
+    app: auth-service
   type: LoadBalancer
   ports:
     - protocol: TCP
       name: metrics
-      port: 8090
-      targetPort: 8090
+      port: 8099
+      targetPort: 8099
