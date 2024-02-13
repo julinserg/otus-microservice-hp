@@ -36,8 +36,14 @@ func main() {
 		var value string
 		value, _ = os.LookupEnv("USC_LOG_LEVEL")
 		config.Logger.Level = value
-		value, _ = os.LookupEnv("USC_AMQP_URI")
-		config.AMQP.URI = value
+		value, _ = os.LookupEnv("USC_HTTP_HOST")
+		config.HTTP.Host = value
+		value, _ = os.LookupEnv("USC_HTTP_PORT")
+		config.HTTP.Port = value
+		value, _ = os.LookupEnv("USC_YDISK_ID")
+		config.YDisk.ClientId = value
+		value, _ = os.LookupEnv("USC_YDISK_SECRET")
+		config.YDisk.ClientSecret = value
 	}
 
 	f, err := os.OpenFile("auth_service_logfile.txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0o666)

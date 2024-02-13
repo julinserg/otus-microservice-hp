@@ -36,6 +36,10 @@ func main() {
 		config.Logger.Level = value
 		value, _ = os.LookupEnv("USC_AMQP_URI")
 		config.AMQP.URI = value
+		value, _ = os.LookupEnv("USC_AUTH_URI")
+		config.AuthSrv.URI = value
+		value, _ = os.LookupEnv("USC_STORAGE_FOLDER")
+		config.Storage.Folder = value
 	}
 
 	f, err := os.OpenFile("cloud_storage_service_logfile.txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0o666)

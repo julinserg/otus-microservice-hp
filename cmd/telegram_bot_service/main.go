@@ -40,6 +40,8 @@ func main() {
 		value, _ = os.LookupEnv("USC_TGBOT_TIMEOUT")
 		timeout, _ := strconv.Atoi(value)
 		config.TGBot.Timeout = timeout
+		value, _ = os.LookupEnv("USC_AUTH_URI")
+		config.AuthSrv.URI = value
 	}
 
 	f, err := os.OpenFile("telegram_bot_service_logfile.txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0o666)

@@ -40,20 +40,44 @@ func (s *SrvCloudStorage) DownloadAndSaveToStorage(fileEvent FileEvent) error {
 	if err != nil {
 		return fmt.Errorf("Error receive token: " + err.Error())
 	}
-	fmt.Println("token: " + token)
 	yaDisk, err := yadisk.NewYaDisk(s.ctx, http.DefaultClient, &yadisk.Token{AccessToken: token})
 	if err != nil {
 		return fmt.Errorf("Error NewYaDisk: " + err.Error())
 	}
 	currentDate := time.Now()
 	folder := s.storageFolder + "/" + fmt.Sprintf("%02d-%02d-%d", currentDate.Day(), currentDate.Month(), currentDate.Year())
-	yaDisk.CreateResource(folder, nil)
+	err = s.createFolder(&yaDisk, folder)
+	if err != nil {
+		return fmt.Errorf("Error createFolder: " + err.Error())
+	}
 	_, fileName := filepath.Split(fileEvent.URL)
 	_, err = yaDisk.UploadExternalResource(folder+"/"+fileName, fileEvent.URL, true, nil)
 	if err != nil {
 		return fmt.Errorf("Error UploadExternalResource: " + err.Error())
 	}
 	return nil
+}
+
+func (s *SrvCloudStorage) createFolder(yaDisk *yadisk.YaDisk, folder string) error {
+	var errorCF error
+	for attempt := 0; attempt < 5; attempt++ {
+		res, err := (*yaDisk).GetResource(folder, nil, 0, 0, false, "", "")
+		if err != nil {
+			s.logger.Error("Error GetResource: " + err.Error())
+		}
+		errorCF = err
+		if res == nil {
+			_, err = (*yaDisk).CreateResource(folder, nil)
+			errorCF = err
+			if err != nil {
+				s.logger.Error("Error CreateResource: " + err.Error())
+			}
+			time.Sleep(1 * time.Second)
+		} else {
+			return nil
+		}
+	}
+	return fmt.Errorf("Error create folder on YDisk: %s", errorCF.Error())
 }
 
 func (s *SrvCloudStorage) getToken(chatId int64) (string, error) {
