@@ -25,7 +25,10 @@ spec:
             - name: USC_AUTH_URI
               value: "http://auth-service-service:8099"
             - name: USC_STORAGE_FOLDER
-              value: "disk:/Приложения/CloudStorageYSBot"
+              valueFrom:
+                configMapKeyRef:
+                  name: csysbot-configmap
+                  key: storagefolder
             - name: USC_DEBUG_TOKEN
               valueFrom:
                 configMapKeyRef:
