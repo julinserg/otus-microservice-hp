@@ -35,10 +35,20 @@ P.S: как план максимум - разместить в облачном
 - RabbitMQ для реализации межсервисного обмена - Event Collaboration паттерна;
 - Postman для тестирования.
 
-Установка:
+Установка (на прод):
 - перед применением манифестов необходимо установить rabbitmq командой:    
 sudo helm install mq-csysbot oci://registry-1.docker.io/bitnamicharts/rabbitmq --set auth.username='guest',auth.password='guest'
+- заполнить все поля в configmap.yaml манифесте
+- применить манифесты из папки /deployments/kubernetes/ командой kubectl apply -f .
 - настроить проброс портов с хоста в кластер кубернетес командой:    
 sudo kubectl port-forward svc/auth-service-service 8099:8099 --address 192.168.49.1
+
+Установка (для запуска тестов):
+- перед применением манифестов необходимо установить rabbitmq командой:    
+sudo helm install mq-csysbot oci://registry-1.docker.io/bitnamicharts/rabbitmq --set auth.username='guest',auth.password='guest'
+- заполнить одно поле "debugtoken" в configmap.yaml манифесте
+- применить манифесты из папки /deployments/kubernetes/ командой kubectl apply -f .
+- запустить коллекцию тестов из папки /tests/ командой newman run CSYSBot.postman_collection.json 
+
 
 
