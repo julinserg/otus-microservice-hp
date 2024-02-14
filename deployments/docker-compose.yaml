@@ -17,10 +17,16 @@ services:
       USC_TGBOT_TOKEN: ""
       USC_TGBOT_TIMEOUT: 60
       USC_AUTH_URI: "http://auth_service_csysbot:8099"
+      USC_DEBUG_HOST: 0.0.0.0
+      USC_DEBUG_PORT: 8011
     depends_on:
       rabbit:
         condition: service_healthy
     restart: on-failure
+    ports:
+      - "8011:8011"
+    expose:
+      - 8011
     networks:
       - rabbit
       - auth
@@ -36,10 +42,16 @@ services:
       USC_AUTH_URI: "http://auth_service_csysbot:8099"
       USC_STORAGE_FOLDER: "disk:/Приложения/CloudStorageYSBot"
       USC_DEBUG_TOKEN: ""
+      USC_DEBUG_HOST: 0.0.0.0
+      USC_DEBUG_PORT: 8022
     depends_on:
       rabbit:
         condition: service_healthy
     restart: on-failure
+    ports:
+      - "8022:8022"
+    expose:
+      - 8022
     networks:
       - rabbit
       - auth

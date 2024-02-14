@@ -31,3 +31,7 @@ spec:
                 configMapKeyRef:
                   name: csysbot-configmap
                   key: debugtoken
+            - name: USC_DEBUG_HOST
+              value: "0.0.0.0"
+            - name: USC_DEBUG_PORT
+              value: "8022"

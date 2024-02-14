@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: test-service-ingress
+  name: for-test-ingress
 spec:
   ingressClassName: nginx
   rules:
@@ -15,3 +15,17 @@ spec:
                 name: auth-service-service
                 port:
                   number: 8099
+          - path: /api/v1/bot-imitation
+            pathType: Prefix
+            backend:
+              service:
+                name: bot-service-service
+                port:
+                  number: 8011
+          - path: /api/v1/cs-debug
+            pathType: Prefix
+            backend:
+              service:
+                name: cloud-storage-service-service
+                port:
+                  number: 8022

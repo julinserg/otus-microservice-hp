@@ -45,6 +45,10 @@ func main() {
 		config.Storage.Folder = value
 		value, _ = os.LookupEnv("USC_DEBUG_TOKEN")
 		config.Debug.TokenYD = value
+		value, _ = os.LookupEnv("USC_DEBUG_HOST")
+		config.Debug.Host = value
+		value, _ = os.LookupEnv("USC_DEBUG_PORT")
+		config.Debug.Port = value
 	}
 
 	f, err := os.OpenFile("cloud_storage_service_logfile.txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0o666)
