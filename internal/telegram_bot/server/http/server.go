@@ -48,7 +48,7 @@ func NewServer(logger Logger, endpoint string, srvBot SrvBot) *Server {
 	return &Server{server, logger, endpoint}
 }
 
-func (s *Server) Start(ctx context.Context) error {
+func (s *Server) Start() error {
 	s.logger.Info("http server started on " + s.endpoint)
 	if err := s.server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		return err

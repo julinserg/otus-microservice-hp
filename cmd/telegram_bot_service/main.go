@@ -1,16 +1,12 @@
 package main
 
 import (
-	"context"
 	"flag"
 	"log"
 	"net"
 	"os"
-	"os/signal"
 	"strconv"
 	"sync"
-	"syscall"
-	"time"
 
 	"github.com/julinserg/otus-microservice-hp/internal/logger"
 	telegram_bot_amqp "github.com/julinserg/otus-microservice-hp/internal/telegram_bot/amqp"
@@ -68,23 +64,8 @@ func main() {
 
 	tb := telegram_bot.New(logg, config.TGBot.Token, config.TGBot.Timeout, srvBot)
 
-	ctx, cancel := signal.NotifyContext(context.Background(),
-		syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
-	defer cancel()
-
 	endpointHttp := net.JoinHostPort(config.Debug.Host, config.Debug.Port)
 	serverHttp := telegram_bot_imitation_internalhttp.NewServer(logg, endpointHttp, srvBot)
-
-	go func() {
-		<-ctx.Done()
-
-		ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
-		defer cancel()
-
-		if err := serverHttp.Stop(ctx); err != nil {
-			logg.Error("failed to stop http server: " + err.Error())
-		}
-	}()
 
 	logg.Info("telegram_bot_service is running...")
 
@@ -94,15 +75,13 @@ func main() {
 		defer wg.Done()
 		if err := tb.Start(); err != nil {
 			logg.Error("failed to start bot: " + err.Error())
-			cancel()
 			return
 		}
 	}()
 	go func() {
 		defer wg.Done()
-		if err := serverHttp.Start(ctx); err != nil {
+		if err := serverHttp.Start(); err != nil {
 			logg.Error("failed to start http server: " + err.Error())
-			cancel()
 			return
 		}
 	}()

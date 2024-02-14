@@ -1,6 +1,7 @@
 package cloud_storage_app
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"io/ioutil"
@@ -37,32 +38,62 @@ func New(logger Logger, uriAuthService string, ctx context.Context, debugToken s
 }
 
 func (s *SrvCloudStorage) DownloadAndSaveToStorage(fileEvent FileEvent) error {
-	token := ""
-	if fileEvent.IsDebugMode && len(s.debugToken) != 0 {
-		token = s.debugToken
-	} else {
-		var err error
-		token, err = s.getToken(fileEvent.ChatId)
-		if err != nil {
-			return fmt.Errorf("Error receive token: " + err.Error())
-		}
+	file, err := s.downloadFile(fileEvent.URL)
+	if err != nil {
+		return fmt.Errorf("Error DownloadFile: " + err.Error())
+	}
+	token, err := s.getToken(fileEvent.ChatId, fileEvent.IsDebugMode)
+	if err != nil {
+		return fmt.Errorf("Error GetToken: " + err.Error())
 	}
 	yaDisk, err := yadisk.NewYaDisk(s.ctx, http.DefaultClient, &yadisk.Token{AccessToken: token})
 	if err != nil {
 		return fmt.Errorf("Error NewYaDisk: " + err.Error())
 	}
-	currentDate := time.Now()
-	folder := s.storageFolder + "/" + fmt.Sprintf("%02d-%02d-%d", currentDate.Day(), currentDate.Month(), currentDate.Year())
+	folder, fileName := s.getFolderAndFileName(fileEvent.URL)
 	err = s.createFolder(&yaDisk, folder)
 	if err != nil {
-		return fmt.Errorf("Error createFolder: " + err.Error())
+		return fmt.Errorf("Error CreateFolder: " + err.Error())
 	}
-	_, fileName := filepath.Split(fileEvent.URL)
-	_, err = yaDisk.UploadExternalResource(folder+"/"+fileName, fileEvent.URL, true, nil)
+	link, err := yaDisk.GetResourceUploadLink(folder+"/"+fileName, nil, true)
 	if err != nil {
-		return fmt.Errorf("Error UploadExternalResource: " + err.Error())
+		return fmt.Errorf("Error GetResourceUploadLink: " + err.Error())
+	}
+	buffer := bytes.NewBuffer(file)
+	_, err = yaDisk.PerformUpload(link, buffer)
+	if err != nil {
+		return fmt.Errorf("Error PerformUpload: " + err.Error())
 	}
 	return nil
+}
+
+func (s *SrvCloudStorage) downloadFile(url string) ([]byte, error) {
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("downloadFile: not create http request: %s\n", err)
+	}
+
+	client := http.Client{
+		Timeout: 5 * time.Second,
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("downloadFile: error making http request: %s\n", err)
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if len(body) == 0 {
+		return nil, fmt.Errorf("downloadFile: empty file")
+	}
+	return body, nil
+}
+
+func (s *SrvCloudStorage) getFolderAndFileName(url string) (string, string) {
+	currentDate := time.Now()
+	folder := s.storageFolder + "/" + fmt.Sprintf("%02d-%02d-%d", currentDate.Day(), currentDate.Month(), currentDate.Year())
+	_, fileName := filepath.Split(url)
+	return folder, fileName
 }
 
 func (s *SrvCloudStorage) createFolder(yaDisk *yadisk.YaDisk, folder string) error {
@@ -87,10 +118,21 @@ func (s *SrvCloudStorage) createFolder(yaDisk *yadisk.YaDisk, folder string) err
 	return fmt.Errorf("Error create folder on YDisk: %s", errorCF.Error())
 }
 
-func (s *SrvCloudStorage) getToken(chatId int64) (string, error) {
+func (s *SrvCloudStorage) getToken(chatId int64, isDebugMode bool) (string, error) {
+	token := ""
+	var err error
+	if isDebugMode && len(s.debugToken) != 0 {
+		token = s.debugToken
+	} else {
+		token, err = s.getTokenFromAuthService(chatId)
+	}
+	return token, err
+}
+
+func (s *SrvCloudStorage) getTokenFromAuthService(chatId int64) (string, error) {
 	req, err := http.NewRequest(http.MethodGet, s.uriAuthService+fmt.Sprintf("/api/v1/auth/token?chat_id=%d", chatId), nil)
 	if err != nil {
-		return "", fmt.Errorf("client: not create http request: %s\n", err)
+		return "", fmt.Errorf("getToken: not create http request: %s\n", err)
 	}
 
 	client := http.Client{
@@ -99,7 +141,7 @@ func (s *SrvCloudStorage) getToken(chatId int64) (string, error) {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return "", fmt.Errorf("client: error making http request: %s\n", err)
+		return "", fmt.Errorf("getToken: error making http request: %s\n", err)
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
