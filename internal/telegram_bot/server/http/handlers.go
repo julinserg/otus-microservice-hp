@@ -17,6 +17,7 @@ type csHandler struct {
 
 func (h *csHandler) returnError(w http.ResponseWriter, stringError string) {
 	w.WriteHeader(http.StatusInternalServerError)
+	w.Write([]byte(stringError))
 }
 
 func (h *csHandler) fileHandler(w http.ResponseWriter, r *http.Request) {

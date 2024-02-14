@@ -24,6 +24,8 @@ type AMQPConfig struct {
 
 type DebugConfig struct {
 	TokenYD string
+	Host    string
+	Port    string
 }
 
 type AuthSrvConfig struct {

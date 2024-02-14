@@ -206,6 +206,120 @@
 			"response": []
 		},
 		{
+			"name": "RemoveFile",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json; charset=UTF-8",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{cs_url}}/api/v1/cs-debug/remove?name=picture-en3dnh2zi84sgt3t.webp",
+					"host": [
+						"{{cs_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"cs-debug",
+						"remove"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "picture-en3dnh2zi84sgt3t.webp"
+						}
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "CheckExistFileNo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful GET request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);",
+							"    pm.expect(pm.response.text()).to.include(\"NO\"); ",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"setTimeout(() => {}, pm.collectionVariables.get(\"timeoutGet\")); "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{cs_url}}/api/v1/cs-debug/exist?name=picture-en3dnh2zi84sgt3t.webp",
+					"host": [
+						"{{cs_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"cs-debug",
+						"exist"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "picture-en3dnh2zi84sgt3t.webp"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "SendFile",
 			"event": [
 				{
@@ -224,7 +338,7 @@
 					"listen": "prerequest",
 					"script": {
 						"exec": [
-							"pm.collectionVariables.set(\"orderId\", pm.variables.replaceIn('{{$randomUUID}}'))"
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -241,7 +355,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n \"id\": \"{{orderId}}\",\n \"products\": [{\"id\": 42, \"price\": 2500, \"count\": 1}],\n \"shipping_to\": \"Большая филёвская 16к1, кв. 14\",\n \"card_params\": \"1234 5678 7890 1234; 765; Ivan Ivanov\"\n}",
+					"raw": "",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -249,7 +363,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{bot_url}}/api/v1/bot-imitation/file?url=https://wallpapers.com/images/featured/picture-en3dnh2zi84sgt3t.webp&chat_id=456",
+					"raw": "{{bot_url}}/api/v1/bot-imitation/file?url=https://wallpapers.com/images/featured/picture-en3dnh2zi84sgt3t.webp&chat_id=001",
 					"host": [
 						"{{bot_url}}"
 					],
@@ -266,11 +380,60 @@
 						},
 						{
 							"key": "chat_id",
-							"value": "456"
+							"value": "001"
 						}
 					]
 				},
 				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "CheckExistFileYes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful GET request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);",
+							"    pm.expect(pm.response.text()).to.include(\"YES\"); ",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"setTimeout(() => {}, pm.collectionVariables.get(\"timeoutGet\")); "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{cs_url}}/api/v1/cs-debug/exist?name=picture-en3dnh2zi84sgt3t.webp",
+					"host": [
+						"{{cs_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"cs-debug",
+						"exist"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "picture-en3dnh2zi84sgt3t.webp"
+						}
+					]
+				}
 			},
 			"response": []
 		}
@@ -311,12 +474,17 @@
 		},
 		{
 			"key": "timeoutGet",
-			"value": "1000",
+			"value": "3000",
 			"type": "string"
 		},
 		{
 			"key": "bot_url",
 			"value": "127.0.0.1:8011",
+			"type": "string"
+		},
+		{
+			"key": "cs_url",
+			"value": "127.0.0.1:8022",
 			"type": "string"
 		}
 	]

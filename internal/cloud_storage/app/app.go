@@ -50,7 +50,8 @@ func (s *SrvCloudStorage) DownloadAndSaveToStorage(fileEvent FileEvent) error {
 	if err != nil {
 		return fmt.Errorf("Error NewYaDisk: " + err.Error())
 	}
-	folder, fileName := s.getFolderAndFileName(fileEvent.URL)
+	folder := s.getFolder()
+	fileName := s.getFileName(fileEvent.URL)
 	err = s.createFolder(&yaDisk, folder)
 	if err != nil {
 		return fmt.Errorf("Error CreateFolder: " + err.Error())
@@ -64,6 +65,35 @@ func (s *SrvCloudStorage) DownloadAndSaveToStorage(fileEvent FileEvent) error {
 	if err != nil {
 		return fmt.Errorf("Error PerformUpload: " + err.Error())
 	}
+	return nil
+}
+
+func (s *SrvCloudStorage) CheckExistFile(name string) (bool, error) {
+	token, err := s.getToken(0, true)
+	if err != nil {
+		return false, fmt.Errorf("Error GetToken: " + err.Error())
+	}
+	yaDisk, err := yadisk.NewYaDisk(s.ctx, http.DefaultClient, &yadisk.Token{AccessToken: token})
+	if err != nil {
+		return false, fmt.Errorf("Error NewYaDisk: " + err.Error())
+	}
+	res, err := yaDisk.GetResource(s.getFolder()+"/"+name, nil, 0, 0, false, "", "")
+	if res != nil && len(res.ResourceID) != 0 {
+		return true, nil
+	}
+	return false, nil
+}
+
+func (s *SrvCloudStorage) RemoveFile(name string) error {
+	token, err := s.getToken(0, true)
+	if err != nil {
+		return fmt.Errorf("Error GetToken: " + err.Error())
+	}
+	yaDisk, err := yadisk.NewYaDisk(s.ctx, http.DefaultClient, &yadisk.Token{AccessToken: token})
+	if err != nil {
+		return fmt.Errorf("Error NewYaDisk: " + err.Error())
+	}
+	yaDisk.DeleteResource(s.getFolder()+"/"+name, nil, false, "", true)
 	return nil
 }
 
@@ -89,11 +119,15 @@ func (s *SrvCloudStorage) downloadFile(url string) ([]byte, error) {
 	return body, nil
 }
 
-func (s *SrvCloudStorage) getFolderAndFileName(url string) (string, string) {
+func (s *SrvCloudStorage) getFolder() string {
 	currentDate := time.Now()
 	folder := s.storageFolder + "/" + fmt.Sprintf("%02d-%02d-%d", currentDate.Day(), currentDate.Month(), currentDate.Year())
+	return folder
+}
+
+func (s *SrvCloudStorage) getFileName(url string) string {
 	_, fileName := filepath.Split(url)
-	return folder, fileName
+	return fileName
 }
 
 func (s *SrvCloudStorage) createFolder(yaDisk *yadisk.YaDisk, folder string) error {

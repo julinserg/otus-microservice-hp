@@ -4,13 +4,16 @@ import (
 	"context"
 	"flag"
 	"log"
+	"net"
 	"os"
 	"os/signal"
 	"sync"
 	"syscall"
+	"time"
 
 	cloud_storage_amqp "github.com/julinserg/otus-microservice-hp/internal/cloud_storage/amqp"
 	cloud_storage_app "github.com/julinserg/otus-microservice-hp/internal/cloud_storage/app"
+	cloud_storage_debug_internalhttp "github.com/julinserg/otus-microservice-hp/internal/cloud_storage/server/http"
 	"github.com/julinserg/otus-microservice-hp/internal/logger"
 )
 
@@ -60,10 +63,24 @@ func main() {
 
 	csMQ := cloud_storage_amqp.New(logg, config.AMQP.URI, srvCS)
 
+	endpointHttp := net.JoinHostPort(config.Debug.Host, config.Debug.Port)
+	serverHttp := cloud_storage_debug_internalhttp.NewServer(logg, endpointHttp, srvCS)
+
+	go func() {
+		<-ctx.Done()
+
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
+		defer cancel()
+
+		if err := serverHttp.Stop(ctx); err != nil {
+			logg.Error("failed to stop http server: " + err.Error())
+		}
+	}()
+
 	logg.Info("cloud_storage_service is running...")
 
 	wg := &sync.WaitGroup{}
-	wg.Add(1)
+	wg.Add(2)
 	go func() {
 		defer wg.Done()
 		if err := csMQ.StartReceive(ctx); err != nil {
@@ -72,6 +89,13 @@ func main() {
 			return
 		}
 	}()
+	go func() {
+		defer wg.Done()
+		if err := serverHttp.Start(); err != nil {
+			logg.Error("failed to start http server: " + err.Error())
+			cancel()
+			return
+		}
+	}()
 	wg.Wait()
-
 }
