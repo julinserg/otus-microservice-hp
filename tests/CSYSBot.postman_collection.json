@@ -465,7 +465,7 @@
 		},
 		{
 			"key": "auth_url",
-			"value": "127.0.0.1:8099"
+			"value": "arch.homework"
 		},
 		{
 			"key": "orderId",
@@ -479,12 +479,12 @@
 		},
 		{
 			"key": "bot_url",
-			"value": "127.0.0.1:8011",
+			"value": "arch.homework",
 			"type": "string"
 		},
 		{
 			"key": "cs_url",
-			"value": "127.0.0.1:8022",
+			"value": "arch.homework",
 			"type": "string"
 		}
 	]
