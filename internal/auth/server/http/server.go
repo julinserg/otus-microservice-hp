@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"net/http"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 type SrvAuth interface {
@@ -42,12 +44,13 @@ func NewServer(logger Logger, endpoint string, srvAuth SrvAuth) *Server {
 		Addr:    endpoint,
 		Handler: loggingMiddleware(mux, logger),
 	}
-
+	initPrometheus()
 	uh := csHandler{logger: logger, srvAuth: srvAuth}
 	mux.HandleFunc("/api/v1/auth/health", hellowHandler)
 	mux.HandleFunc("/api/v1/auth/auth", uh.authHandler)
 	mux.HandleFunc("/api/v1/auth/token", uh.tokenHandler)
 	mux.HandleFunc("/api/v1/auth/reqstring", uh.reqStringHandler)
+	mux.Handle("/metrics", promhttp.Handler())
 	return &Server{server, logger, endpoint}
 }
 

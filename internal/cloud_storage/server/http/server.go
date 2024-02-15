@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"net/http"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 type SrvCloudStorage interface {
@@ -41,11 +43,12 @@ func NewServer(logger Logger, endpoint string, srvCS SrvCloudStorage) *Server {
 		Addr:    endpoint,
 		Handler: loggingMiddleware(mux, logger),
 	}
-
+	initPrometheus()
 	uh := csHandler{logger: logger, srvCS: srvCS}
 	mux.HandleFunc("/api/v1/cs-debug/health", hellowHandler)
 	mux.HandleFunc("/api/v1/cs-debug/exist", uh.existFileHandler)
 	mux.HandleFunc("/api/v1/cs-debug/remove", uh.removeFileHandler)
+	mux.Handle("/metrics", promhttp.Handler())
 	return &Server{server, logger, endpoint}
 }
 

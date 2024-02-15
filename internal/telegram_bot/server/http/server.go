@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"net/http"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 type SrvBot interface {
@@ -41,10 +43,11 @@ func NewServer(logger Logger, endpoint string, srvBot SrvBot) *Server {
 		Addr:    endpoint,
 		Handler: loggingMiddleware(mux, logger),
 	}
-
+	initPrometheus()
 	uh := csHandler{logger: logger, srvBot: srvBot}
 	mux.HandleFunc("/api/v1/bot-imitation/health", hellowHandler)
 	mux.HandleFunc("/api/v1/bot-imitation/file", uh.fileHandler)
+	mux.Handle("/metrics", promhttp.Handler())
 	return &Server{server, logger, endpoint}
 }
 

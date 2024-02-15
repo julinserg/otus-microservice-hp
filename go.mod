@@ -10,6 +10,7 @@ require (
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.17 // indirect
 	github.com/nikitaksv/yandex-disk-sdk-go v1.0.3
+	github.com/prometheus/client_golang v1.18.0
 	github.com/rs/zerolog v1.28.0
 	github.com/streadway/amqp v1.1.0
 	github.com/technoweenie/multipartstreamer v1.0.1 // indirect
