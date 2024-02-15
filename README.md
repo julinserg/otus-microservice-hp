@@ -38,7 +38,7 @@ P.S: как план максимум - разместить в облачном
 Установка (на прод):
 - перед применением манифестов необходимо установить rabbitmq командой:    
 sudo helm install mq-csysbot oci://registry-1.docker.io/bitnamicharts/rabbitmq --set auth.username='guest',auth.password='guest'
-- заполнить поля в configmap.yaml манифесте(tgbottoken - токен telegram-бота, ydiskid - ID приложения выданный yandex-ом для приложения работающего с yandex-диском, ydisksecret - ключ приложения выданный yandex-ом для приложения работающего с yandex-диском)
+- заполнить поля в configmap.yaml манифесте(tgbottoken - токен telegram-бота, ydiskid - ID приложения выданный yandex-ом для приложения работающего с yandex-диском, ydisksecret - ключ приложения выданный yandex-ом для приложения работающего с yandex-диском, storagefolder - путь к папке приложения на yandex-диске в формате "disk:/Приложения/<имя приложения>")
 - применить манифесты из папки /deployments/kubernetes/ командой kubectl apply -f .
 - настроить проброс портов с хоста в кластер кубернетес командой:    
 sudo kubectl port-forward svc/auth-service-service 8099:8099 --address 192.168.49.1
@@ -46,7 +46,7 @@ sudo kubectl port-forward svc/auth-service-service 8099:8099 --address 192.168.4
 Установка (для запуска тестов):
 - перед применением манифестов необходимо установить rabbitmq командой:    
 sudo helm install mq-csysbot oci://registry-1.docker.io/bitnamicharts/rabbitmq --set auth.username='guest',auth.password='guest'
-- заполнить одно поле в configmap.yaml манифесте (debugtoken - токен авторизации выданный yandex-ом для работы с yandex-диском)
+- заполнить два поля в configmap.yaml манифесте (debugtoken - токен авторизации выданный yandex-ом для работы с yandex-диском, storagefolder - путь к папке приложения на yandex-диске в формате "disk:/Приложения/<имя приложения>")
 - применить манифесты из папки /deployments/kubernetes/ командой kubectl apply -f .
 - запустить коллекцию тестов из папки /tests/ командой newman run CSYSBot.postman_collection.json 
 
