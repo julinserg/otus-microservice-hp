@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: image-server-service
+  labels:
+    app: image-server
+spec:
+  selector:
+    app: image-server
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      name: image-metrics
+      port: 80
+      targetPort: 80

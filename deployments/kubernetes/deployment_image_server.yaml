@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: image-server-deployment
+  labels:
+    app: image-server
+spec:
+  selector:
+    matchLabels:
+      app: image-server
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: image-server
+    spec:
+      containers:
+        - name: image-server
+          image: julinserg/server_images_csysbot_docker_image
+          env:
+            - name: NGINX_PORT
+              value: "80"
