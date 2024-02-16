@@ -36,19 +36,32 @@ P.S: как план максимум - разместить в облачном
 - Postman для тестирования.
 
 Установка (на прод):
-- перед применением манифестов необходимо установить rabbitmq командой:    
+1. перед применением манифестов необходимо установить rabbitmq командой:    
 sudo helm install mq-csysbot oci://registry-1.docker.io/bitnamicharts/rabbitmq --set auth.username='guest',auth.password='guest'
-- заполнить поля в configmap.yaml манифесте(tgbottoken - токен telegram-бота, ydiskid - ID приложения выданный yandex-ом для приложения работающего с yandex-диском, ydisksecret - ключ приложения выданный yandex-ом для приложения работающего с yandex-диском, storagefolder - путь к папке приложения на yandex-диске в формате "disk:/Приложения/<имя приложения>")
-- применить манифесты из папки /deployments/kubernetes/ командой kubectl apply -f .
-- настроить проброс портов с хоста в кластер кубернетес командой:    
-sudo kubectl port-forward svc/auth-service-service 8099:8099 --address 192.168.49.1
+2. установить prometheus командами:
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+helm install stack prometheus-community/kube-prometheus-stack -f <абсолютный путь до файла ./deployments/prometeus_helm/prometheus.yaml>
+3. заполнить поля в configmap.yaml манифесте(tgbottoken - токен telegram-бота, ydiskid - ID приложения выданный yandex-ом для приложения работающего с yandex-диском, ydisksecret - ключ приложения выданный yandex-ом для приложения работающего с yandex-диском, storagefolder - путь к папке приложения на yandex-диске в формате "disk:/Приложения/<имя приложения>")
+4. применить манифесты из папки /deployments/kubernetes/ командой kubectl apply -f .
+5. настроить проброс портов с хоста в кластер кубернетес командой для сервиса авторизации:    
+sudo kubectl port-forward svc/auth-service-service 8099:8099 --address 192.168.49.1, где 192.168.49.1 ip-адрес хоста 
+6. настроить проброс портов с хоста в кластер кубернетес для работы с дашбордом prometheus
+sudo kubectl port-forward service/prometheus-operated  9090
 
-Установка (для запуска тестов):
-- перед применением манифестов необходимо установить rabbitmq командой:    
-sudo helm install mq-csysbot oci://registry-1.docker.io/bitnamicharts/rabbitmq --set auth.username='guest',auth.password='guest'
-- заполнить два поля в configmap.yaml манифесте (debugtoken - токен авторизации выданный yandex-ом для работы с yandex-диском, storagefolder - путь к папке приложения на yandex-диске в формате "disk:/Приложения/<имя приложения>")
-- применить манифесты из папки /deployments/kubernetes/ командой kubectl apply -f .
-- запустить коллекцию тестов из папки /tests/ командой newman run CSYSBot.postman_collection.json 
+Установка (для запуска функциональных тестов):
+1. установить rabbitmq как указано выше
+2. заполнить два поля в configmap.yaml манифесте (debugtoken - токен авторизации выданный yandex-ом для работы с yandex-диском, storagefolder - путь к папке приложения на yandex-диске в формате "disk:/Приложения/<имя приложения>")
+3. применить манифесты из папки /deployments/kubernetes/ командой kubectl apply -f .
+4. запустить коллекцию тестов из папки /tests/ командой newman run CSYSBot.postman_collection.json 
 
-
+Установка (для запуска нагрузочных тестов):
+1. установить rabbitmq как указано выше
+2. установить prometheus как указано выше
+3. поля в configmap.yaml манифесте оставить пустыми
+4. применить манифесты из папки /deployments/kubernetes/ командой kubectl apply -f .
+5. открыть коллекцию тестов ./tests/CSYSBotHighload.postman_collection.json в Postman и запустить в режиме "оценки производительности"
+6. настроить проброс портов с хоста в кластер кубернетес для работы с дашбордом prometheus
+sudo kubectl port-forward service/prometheus-operated  9090
+7. выполнить анализ метрик
 
