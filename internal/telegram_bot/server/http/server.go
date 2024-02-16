@@ -10,7 +10,7 @@ import (
 
 type SrvBot interface {
 	GetAuthRequestString() (string, error)
-	SendFileEvent(url string, chatId int64, isDebugMode bool) error
+	SendFileEvent(url string, chatId int64, testMode string) error
 }
 
 type Server struct {

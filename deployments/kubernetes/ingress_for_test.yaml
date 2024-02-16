@@ -29,3 +29,10 @@ spec:
                 name: cloud-storage-service-service
                 port:
                   number: 8022
+          - path: /images
+            pathType: Prefix
+            backend:
+              service:
+                name: image-server-service
+                port:
+                  number: 80

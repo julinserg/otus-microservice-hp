@@ -27,12 +27,13 @@ func (h *csHandler) fileHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	url := r.URL.Query().Get("url")
 	chatId := r.URL.Query().Get("chat_id")
+	testMode := r.URL.Query().Get("test_mode")
 	chatIdInt64, err := strconv.ParseInt(chatId, 10, 64)
 	if err != nil {
 		h.returnError(w, err.Error())
 		return
 	}
-	err = h.srvBot.SendFileEvent(url, chatIdInt64, true)
+	err = h.srvBot.SendFileEvent(url, chatIdInt64, testMode)
 	if err != nil {
 		h.returnError(w, err.Error())
 		return

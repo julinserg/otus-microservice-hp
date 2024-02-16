@@ -20,9 +20,9 @@ type Logger interface {
 }
 
 type FileEvent struct {
-	ChatId      int64  `json:"chat_id"`
-	URL         string `json:"url"`
-	IsDebugMode bool   `json:"is_debug_mode"`
+	ChatId   int64  `json:"chat_id"`
+	URL      string `json:"url"`
+	TestMode string `json:"test_mode"`
 }
 
 type SrvCloudStorage struct {
@@ -42,7 +42,10 @@ func (s *SrvCloudStorage) DownloadAndSaveToStorage(fileEvent FileEvent) error {
 	if err != nil {
 		return fmt.Errorf("Error DownloadFile: " + err.Error())
 	}
-	token, err := s.getToken(fileEvent.ChatId, fileEvent.IsDebugMode)
+	if fileEvent.TestMode == "highload_test" {
+		return nil
+	}
+	token, err := s.getToken(fileEvent.ChatId, fileEvent.TestMode)
 	if err != nil {
 		return fmt.Errorf("Error GetToken: " + err.Error())
 	}
@@ -69,7 +72,7 @@ func (s *SrvCloudStorage) DownloadAndSaveToStorage(fileEvent FileEvent) error {
 }
 
 func (s *SrvCloudStorage) CheckExistFile(name string) (bool, error) {
-	token, err := s.getToken(0, true)
+	token, err := s.getToken(0, "simple_test")
 	if err != nil {
 		return false, fmt.Errorf("Error GetToken: " + err.Error())
 	}
@@ -85,7 +88,7 @@ func (s *SrvCloudStorage) CheckExistFile(name string) (bool, error) {
 }
 
 func (s *SrvCloudStorage) RemoveFile(name string) error {
-	token, err := s.getToken(0, true)
+	token, err := s.getToken(0, "simple_test")
 	if err != nil {
 		return fmt.Errorf("Error GetToken: " + err.Error())
 	}
@@ -152,10 +155,10 @@ func (s *SrvCloudStorage) createFolder(yaDisk *yadisk.YaDisk, folder string) err
 	return fmt.Errorf("Error create folder on YDisk: %s", errorCF.Error())
 }
 
-func (s *SrvCloudStorage) getToken(chatId int64, isDebugMode bool) (string, error) {
+func (s *SrvCloudStorage) getToken(chatId int64, testMode string) (string, error) {
 	token := ""
 	var err error
-	if isDebugMode && len(s.debugToken) != 0 {
+	if testMode == "simple_test" && len(s.debugToken) != 0 {
 		token = s.debugToken
 	} else {
 		token, err = s.getTokenFromAuthService(chatId)

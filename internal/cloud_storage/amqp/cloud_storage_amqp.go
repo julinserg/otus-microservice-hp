@@ -8,6 +8,7 @@ import (
 	amqp_settings "github.com/julinserg/otus-microservice-hp/internal/amqp/settings"
 	amqp_sub "github.com/julinserg/otus-microservice-hp/internal/amqp/sub"
 	cloud_storage_app "github.com/julinserg/otus-microservice-hp/internal/cloud_storage/app"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/streadway/amqp"
 )
 
@@ -28,7 +29,14 @@ type SrvCloudStorageAMQP struct {
 	uri    string
 }
 
+var totalMQProcessEvent = prometheus.NewCounter(
+	prometheus.CounterOpts{
+		Name: "mq_process_events_total",
+		Help: "Number of processed events from MQ.",
+	})
+
 func New(logger Logger, uri string, srvCS SrvCloudStorage) *SrvCloudStorageAMQP {
+	prometheus.Register(totalMQProcessEvent)
 	return &SrvCloudStorageAMQP{
 		logger: logger,
 		uri:    uri,
@@ -62,6 +70,7 @@ func (a *SrvCloudStorageAMQP) StartReceive(ctx context.Context) error {
 		if err != nil {
 			a.logger.Warn("Error SrvCloudStorageAMQP: " + err.Error())
 		}
+		totalMQProcessEvent.Inc()
 	}
 	return nil
 }

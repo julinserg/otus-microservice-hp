@@ -8,6 +8,7 @@
 *.dll
 *.so
 *.dylib
+*.jpg
 go-cp
 go-envdir
 go-telnet

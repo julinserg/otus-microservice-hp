@@ -92,3 +92,15 @@ services:
       interval: 30s
       timeout: 30s
       retries: 3
+
+  server-images:
+    build:
+      context: ../
+      dockerfile: ./build/DockerfileServerImages
+    image: server_images_csysbot_docker_image  
+    ports:
+      - "8080:80"
+    expose:
+      - 80
+    environment:      
+      - NGINX_PORT=80

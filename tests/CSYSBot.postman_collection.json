@@ -249,7 +249,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{cs_url}}/api/v1/cs-debug/remove?name=picture-en3dnh2zi84sgt3t.webp",
+					"raw": "{{cs_url}}/api/v1/cs-debug/remove?name=gopher_original_1024x504.jpg",
 					"host": [
 						"{{cs_url}}"
 					],
@@ -262,7 +262,7 @@
 					"query": [
 						{
 							"key": "name",
-							"value": "picture-en3dnh2zi84sgt3t.webp"
+							"value": "gopher_original_1024x504.jpg"
 						}
 					]
 				},
@@ -299,7 +299,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{cs_url}}/api/v1/cs-debug/exist?name=picture-en3dnh2zi84sgt3t.webp",
+					"raw": "{{cs_url}}/api/v1/cs-debug/exist?name=gopher_original_1024x504.jpg",
 					"host": [
 						"{{cs_url}}"
 					],
@@ -312,7 +312,7 @@
 					"query": [
 						{
 							"key": "name",
-							"value": "picture-en3dnh2zi84sgt3t.webp"
+							"value": "gopher_original_1024x504.jpg"
 						}
 					]
 				}
@@ -363,7 +363,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{bot_url}}/api/v1/bot-imitation/file?url=https://wallpapers.com/images/featured/picture-en3dnh2zi84sgt3t.webp&chat_id=001",
+					"raw": "{{bot_url}}/api/v1/bot-imitation/file?url=http://{{bot_url}}/images/gopher_original_1024x504.jpg&chat_id=001&test_mode=simple_test",
 					"host": [
 						"{{bot_url}}"
 					],
@@ -376,11 +376,15 @@
 					"query": [
 						{
 							"key": "url",
-							"value": "https://wallpapers.com/images/featured/picture-en3dnh2zi84sgt3t.webp"
+							"value": "http://{{bot_url}}/images/gopher_original_1024x504.jpg"
 						},
 						{
 							"key": "chat_id",
 							"value": "001"
+						},
+						{
+							"key": "test_mode",
+							"value": "simple_test"
 						}
 					]
 				},
@@ -417,7 +421,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{cs_url}}/api/v1/cs-debug/exist?name=picture-en3dnh2zi84sgt3t.webp",
+					"raw": "{{cs_url}}/api/v1/cs-debug/exist?name=gopher_original_1024x504.jpg",
 					"host": [
 						"{{cs_url}}"
 					],
@@ -430,7 +434,7 @@
 					"query": [
 						{
 							"key": "name",
-							"value": "picture-en3dnh2zi84sgt3t.webp"
+							"value": "gopher_original_1024x504.jpg"
 						}
 					]
 				}
@@ -460,22 +464,8 @@
 	],
 	"variable": [
 		{
-			"key": "id",
-			"value": "1"
-		},
-		{
 			"key": "auth_url",
 			"value": "arch.homework"
-		},
-		{
-			"key": "orderId",
-			"value": "",
-			"type": "string"
-		},
-		{
-			"key": "timeoutGet",
-			"value": "3000",
-			"type": "string"
 		},
 		{
 			"key": "bot_url",
@@ -485,6 +475,11 @@
 		{
 			"key": "cs_url",
 			"value": "arch.homework",
+			"type": "string"
+		},
+		{
+			"key": "timeoutGet",
+			"value": "5000",
 			"type": "string"
 		}
 	]
