@@ -45,6 +45,7 @@ https://docs.google.com/document/d/1D6Lg1bm3j7GlibDTnGk1mUr28Xeg496MhJE61NpWVpw
 - SendFile - отправить файл в тестовое облачное хранилище
 - CheckExistFileYes - убедиться что файл присутствует в тестовом облачном хранилище
 ### Нагрузочное
+https://docs.google.com/document/d/1au8VdV8CZUSmS2CNSs3RaebOpPVL0i-h0pSbH_RJ3UY
 
 ## Установка
 ### На prodaction-сервер:
