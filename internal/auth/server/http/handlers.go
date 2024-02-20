@@ -10,7 +10,7 @@ var htmlAuthOk = `
 	<head>
 	</head>	
     <body>
-		Authorization is OK! Welcome to CloudStorageYSBot.	
+		<h1>Authorization is OK! Welcome to CloudStorageYSBot.</h1>	
 	</body>
 </html>
 `
@@ -20,7 +20,7 @@ var htmlAuthError = `
 	<head>
 	</head>	
     <body>
-		Authorization is Error:	%s
+		<h1>Authorization is Error:	%s</h1>
 	</body>
 </html>
 `
