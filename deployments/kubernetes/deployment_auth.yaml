@@ -18,14 +18,14 @@ spec:
         - name: auth-service
           image: julinserg/auth_service_csysbot_docker_image
           ports:
-            - containerPort: 8099
+            - containerPort: 8033
           env:
             - name: USC_LOG_LEVEL
               value: "INFO"
             - name: USC_HTTP_HOST
               value: "0.0.0.0"
             - name: USC_HTTP_PORT
-              value: "8099"
+              value: "8033"
             - name: USC_YDISK_ID
               valueFrom:
                 configMapKeyRef:

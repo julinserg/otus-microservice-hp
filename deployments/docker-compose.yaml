@@ -16,7 +16,7 @@ services:
       USC_AMQP_URI: "amqp://guest:guest@rabbit:5672/"
       USC_TGBOT_TOKEN: ""
       USC_TGBOT_TIMEOUT: 60
-      USC_AUTH_URI: "http://auth_service_csysbot:8099"
+      USC_AUTH_URI: "http://auth_service_csysbot:8033"
       USC_DEBUG_HOST: 0.0.0.0
       USC_DEBUG_PORT: 8011
     depends_on:
@@ -39,7 +39,7 @@ services:
     environment:
       USC_LOG_LEVEL: INFO
       USC_AMQP_URI: "amqp://guest:guest@rabbit:5672/"
-      USC_AUTH_URI: "http://auth_service_csysbot:8099"
+      USC_AUTH_URI: "http://auth_service_csysbot:8033"
       USC_STORAGE_FOLDER: ""
       USC_DEBUG_TOKEN: ""
       USC_DEBUG_HOST: 0.0.0.0
@@ -64,14 +64,14 @@ services:
     environment:
       USC_LOG_LEVEL: INFO
       USC_HTTP_HOST: 0.0.0.0
-      USC_HTTP_PORT: 8099
+      USC_HTTP_PORT: 8033
       USC_YDISK_ID: ""
       USC_YDISK_SECRET: ""
     restart: on-failure
     ports:
-      - "8099:8099"
+      - "8033:8033"
     expose:
-      - 8099
+      - 8033
     networks:
       - auth
     depends_on:

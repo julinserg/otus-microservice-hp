@@ -11,5 +11,5 @@ spec:
   ports:
     - protocol: TCP
       name: auth-metrics
-      port: 8099
-      targetPort: 8099
+      port: 8033
+      targetPort: 8033

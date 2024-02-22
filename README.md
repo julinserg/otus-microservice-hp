@@ -58,7 +58,7 @@ helm install stack prometheus-community/kube-prometheus-stack -f <абсолют
 3. заполнить поля в configmap.yaml манифесте(tgbottoken - токен telegram-бота, ydiskid - ID приложения выданный yandex-ом для приложения работающего с yandex-диском, ydisksecret - ключ приложения выданный yandex-ом для приложения работающего с yandex-диском, storagefolder - путь к папке приложения на yandex-диске в формате "disk:/Приложения/<имя приложения>")
 4. применить манифесты из папки /deployments/kubernetes/ командой kubectl apply -f .
 5. настроить проброс портов с хоста в кластер кубернетес командой для сервиса авторизации:    
-sudo kubectl port-forward svc/auth-service-service 8099:8099 --address 192.168.49.1, где 192.168.49.1 ip-адрес хоста 
+sudo kubectl port-forward svc/auth-service-service 8033:8033 --address 192.168.49.1, где 192.168.49.1 ip-адрес хоста 
 6. настроить проброс портов с хоста в кластер кубернетес для работы с дашбордом prometheus
 sudo kubectl port-forward service/prometheus-operated  9090
 

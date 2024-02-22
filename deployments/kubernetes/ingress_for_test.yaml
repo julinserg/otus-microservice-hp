@@ -14,7 +14,7 @@ spec:
               service:
                 name: auth-service-service
                 port:
-                  number: 8099
+                  number: 8033
           - path: /api/v1/bot-imitation
             pathType: Prefix
             backend:
