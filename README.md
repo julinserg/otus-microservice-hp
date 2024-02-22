@@ -66,14 +66,16 @@ sudo kubectl port-forward service/prometheus-operated  9090
 1. установить rabbitmq как указано выше
 2. заполнить два поля в configmap.yaml манифесте (debugtoken - токен авторизации выданный yandex-ом для работы с yandex-диском, storagefolder - путь к папке приложения на yandex-диске в формате "disk:/Приложения/<имя приложения>")
 3. применить манифесты из папки /deployments/kubernetes/ командой kubectl apply -f .
-4. запустить коллекцию тестов из папки /tests/ командой newman run CSYSBot.postman_collection.json 
+4. прописать в файле /etc/hosts правило разрешения доменных имен arch.homework -> ip-адрес minikube (ip-адрес ингреса)
+5. запустить коллекцию тестов из папки /tests/ командой newman run CSYSBot.postman_collection.json 
 
 ### Для запуска нагрузочных тестов:
 1. установить rabbitmq как указано выше
 2. установить prometheus как указано выше
 3. поля в configmap.yaml манифесте оставить пустыми
 4. применить манифесты из папки /deployments/kubernetes/ командой kubectl apply -f .
-5. открыть коллекцию тестов ./tests/CSYSBotHighload.postman_collection.json в Postman и запустить в режиме "оценки производительности"
-6. настроить проброс портов с хоста в кластер кубернетес для работы с дашбордом prometheus
+5. прописать в файле /etc/hosts правило разрешения доменных имен arch.homework -> ip-адрес minikube (ip-адрес ингреса)
+6. открыть коллекцию тестов ./tests/CSYSBotHighload.postman_collection.json в Postman и запустить в режиме "оценки производительности"
+7. настроить проброс портов с хоста в кластер кубернетес для работы с дашбордом prometheus
 sudo kubectl port-forward service/prometheus-operated  9090
-7. выполнить анализ метрик
+8. выполнить анализ метрик
