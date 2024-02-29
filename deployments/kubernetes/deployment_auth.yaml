@@ -24,8 +24,10 @@ spec:
               value: "INFO"
             - name: USC_HTTP_HOST
               value: "0.0.0.0"
-            - name: USC_HTTP_PORT
+            - name: USC_HTTP_PORT_PUBLIC
               value: "8033"
+            - name: USC_HTTP_PORT_PRIVATE
+              value: "8099"
             - name: USC_YDISK_ID
               valueFrom:
                 configMapKeyRef:

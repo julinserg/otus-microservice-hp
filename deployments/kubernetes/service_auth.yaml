@@ -10,6 +10,10 @@ spec:
   type: LoadBalancer
   ports:
     - protocol: TCP
-      name: auth-metrics
+      name: auth-public-metrics
       port: 8033
       targetPort: 8033
+    - protocol: TCP
+      name: auth-private-metrics
+      port: 8099
+      targetPort: 8099

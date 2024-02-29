@@ -8,13 +8,20 @@ spec:
     - host: arch.homework
       http:
         paths:
-          - path: /api/v1/auth
+          - path: /api/v1/auth-public
             pathType: Prefix
             backend:
               service:
                 name: auth-service-service
                 port:
                   number: 8033
+          - path: /api/v1/auth-private
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-service-service
+                port:
+                  number: 8099
           - path: /api/v1/bot-imitation
             pathType: Prefix
             backend:

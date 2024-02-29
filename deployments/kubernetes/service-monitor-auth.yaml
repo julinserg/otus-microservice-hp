@@ -6,7 +6,7 @@ metadata:
     app: auth-service-monitor
 spec:
   endpoints:
-    - port: auth-metrics
+    - port: auth-private-metrics
       scrapeTimeout: 30s
       path: /metrics
       honorLabels: true

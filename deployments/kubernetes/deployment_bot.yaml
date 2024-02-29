@@ -30,7 +30,7 @@ spec:
             - name: USC_TGBOT_TIMEOUT
               value: "60"
             - name: USC_AUTH_URI
-              value: "http://auth-service-service:8033"
+              value: "http://auth-service-service:8099"
             - name: USC_DEBUG_HOST
               value: "0.0.0.0"
             - name: USC_DEBUG_PORT
