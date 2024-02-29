@@ -28,7 +28,8 @@ type YDiskConfig struct {
 
 type HTTPConfig struct {
 	Host string
-	Port string
+	PortPublic string
+	PortPrivate string
 }
 
 func (c *Config) Read(fpath string) error {

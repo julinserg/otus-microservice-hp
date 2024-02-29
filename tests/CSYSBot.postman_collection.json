@@ -35,7 +35,7 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "{{auth_url}}/api/v1/auth/reqstring"
+				"url": "{{auth_private_url}}/api/v1/auth-private/reqstring"
 			},
 			"response": []
 		},
@@ -67,7 +67,7 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "{{auth_url}}/api/v1/auth/auth"
+				"url": "{{auth_public_url}}/api/v1/auth-public/auth"
 			},
 			"response": []
 		},
@@ -100,14 +100,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{auth_url}}/api/v1/auth/auth?code=123&state=456",
+					"raw": "{{auth_public_url}}/api/v1/auth-public/auth?code=123&state=456",
 					"host": [
-						"{{auth_url}}"
+						"{{auth_public_url}}"
 					],
 					"path": [
 						"api",
 						"v1",
-						"auth",
+						"auth-public",
 						"auth"
 					],
 					"query": [
@@ -152,7 +152,7 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "{{auth_url}}/api/v1/auth/token"
+				"url": "{{auth_private_url}}/api/v1/auth-private/token"
 			},
 			"response": []
 		},
@@ -185,14 +185,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{auth_url}}/api/v1/auth/token?chat_id=123",
+					"raw": "{{auth_private_url}}/api/v1/auth-private/token?chat_id=123",
 					"host": [
-						"{{auth_url}}"
+						"{{auth_private_url}}"
 					],
 					"path": [
 						"api",
 						"v1",
-						"auth",
+						"auth-private",
 						"token"
 					],
 					"query": [
@@ -363,7 +363,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{bot_url}}/api/v1/bot-imitation/file?url=http://{{bot_url}}/images/gopher_original_1024x504.jpg&chat_id=001&test_mode=simple_test",
+					"raw": "{{bot_url}}/api/v1/bot-imitation/file?url=http://{{image_url}}/images/gopher_original_1024x504.jpg&chat_id=001&test_mode=simple_test",
 					"host": [
 						"{{bot_url}}"
 					],
@@ -376,7 +376,7 @@
 					"query": [
 						{
 							"key": "url",
-							"value": "http://{{bot_url}}/images/gopher_original_1024x504.jpg"
+							"value": "http://{{image_url}}/images/gopher_original_1024x504.jpg"
 						},
 						{
 							"key": "chat_id",
@@ -464,8 +464,13 @@
 	],
 	"variable": [
 		{
-			"key": "auth_url",
+			"key": "auth_private_url",
 			"value": "arch.homework"
+		},
+		{
+			"key": "auth_public_url",
+			"value": "arch.homework",
+			"type": "string"
 		},
 		{
 			"key": "bot_url",
@@ -474,6 +479,11 @@
 		},
 		{
 			"key": "cs_url",
+			"value": "arch.homework",
+			"type": "string"
+		},
+		{
+			"key": "image_url",
 			"value": "arch.homework",
 			"type": "string"
 		},

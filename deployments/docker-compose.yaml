@@ -4,6 +4,8 @@ networks:
     driver: bridge
   auth:
     driver: bridge
+  images:
+    driver: bridge
 
 services:
   telegram_bot_service_csysbot:
@@ -16,7 +18,7 @@ services:
       USC_AMQP_URI: "amqp://guest:guest@rabbit:5672/"
       USC_TGBOT_TOKEN: ""
       USC_TGBOT_TIMEOUT: 60
-      USC_AUTH_URI: "http://auth_service_csysbot:8033"
+      USC_AUTH_URI: "http://auth_service_csysbot:8099"
       USC_DEBUG_HOST: 0.0.0.0
       USC_DEBUG_PORT: 8011
     depends_on:
@@ -39,7 +41,7 @@ services:
     environment:
       USC_LOG_LEVEL: INFO
       USC_AMQP_URI: "amqp://guest:guest@rabbit:5672/"
-      USC_AUTH_URI: "http://auth_service_csysbot:8033"
+      USC_AUTH_URI: "http://auth_service_csysbot:8099"
       USC_STORAGE_FOLDER: ""
       USC_DEBUG_TOKEN: ""
       USC_DEBUG_HOST: 0.0.0.0
@@ -55,6 +57,7 @@ services:
     networks:
       - rabbit
       - auth
+      - images
 
   auth_service_csysbot:
     build:
@@ -64,14 +67,17 @@ services:
     environment:
       USC_LOG_LEVEL: INFO
       USC_HTTP_HOST: 0.0.0.0
-      USC_HTTP_PORT: 8033
+      USC_HTTP_PORT_PUBLIC: 8033
+      USC_HTTP_PORT_PRIVATE: 8099
       USC_YDISK_ID: ""
       USC_YDISK_SECRET: ""
     restart: on-failure
     ports:
       - "8033:8033"
+      - "8099:8099"
     expose:
       - 8033
+      - 8099
     networks:
       - auth
     depends_on:
@@ -80,11 +86,6 @@ services:
   
   rabbit:
     image: rabbitmq:3.9.25-management
-    ports:
-      - "15672:15672"
-      - "5672:5672"
-    expose:
-      - 15672
     networks:
       - rabbit
     healthcheck:
@@ -104,3 +105,5 @@ services:
       - 80
     environment:      
       - NGINX_PORT=80
+    networks:
+      - images

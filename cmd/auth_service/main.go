@@ -12,7 +12,8 @@ import (
 	"time"
 
 	auth_app "github.com/julinserg/otus-microservice-hp/internal/auth/app"
-	auth_internalhttp "github.com/julinserg/otus-microservice-hp/internal/auth/server/http"
+	auth_internalhttp_private "github.com/julinserg/otus-microservice-hp/internal/auth/server/http_private"
+	auth_internalhttp_public "github.com/julinserg/otus-microservice-hp/internal/auth/server/http_public"
 	"github.com/julinserg/otus-microservice-hp/internal/logger"
 )
 
@@ -38,8 +39,10 @@ func main() {
 		config.Logger.Level = value
 		value, _ = os.LookupEnv("USC_HTTP_HOST")
 		config.HTTP.Host = value
-		value, _ = os.LookupEnv("USC_HTTP_PORT")
-		config.HTTP.Port = value
+		value, _ = os.LookupEnv("USC_HTTP_PORT_PUBLIC")
+		config.HTTP.PortPublic = value
+		value, _ = os.LookupEnv("USC_HTTP_PORT_PRIVATE")
+		config.HTTP.PortPrivate = value
 		value, _ = os.LookupEnv("USC_YDISK_ID")
 		config.YDisk.ClientId = value
 		value, _ = os.LookupEnv("USC_YDISK_SECRET")
@@ -62,8 +65,11 @@ func main() {
 
 	srvAuth := auth_app.New(logg, config.YDisk.ClientId, config.YDisk.ClientSecret)
 
-	endpointHttp := net.JoinHostPort(config.HTTP.Host, config.HTTP.Port)
-	serverHttp := auth_internalhttp.NewServer(logg, endpointHttp, srvAuth)
+	endpointHttpPublic := net.JoinHostPort(config.HTTP.Host, config.HTTP.PortPublic)
+	serverHttpPublic := auth_internalhttp_public.NewServer(logg, endpointHttpPublic, srvAuth)
+
+	endpointHttpPrivate := net.JoinHostPort(config.HTTP.Host, config.HTTP.PortPrivate)
+	serverHttpPrivate := auth_internalhttp_private.NewServer(logg, endpointHttpPrivate, srvAuth)
 
 	go func() {
 		<-ctx.Done()
@@ -71,16 +77,35 @@ func main() {
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
 		defer cancel()
 
-		if err := serverHttp.Stop(ctx); err != nil {
+		if err := serverHttpPublic.Stop(ctx); err != nil {
+			logg.Error("failed to stop http server: " + err.Error())
+		}
+	}()
+
+	go func() {
+		<-ctx.Done()
+
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
+		defer cancel()
+
+		if err := serverHttpPrivate.Stop(ctx); err != nil {
 			logg.Error("failed to stop http server: " + err.Error())
 		}
 	}()
 
 	wg := &sync.WaitGroup{}
-	wg.Add(1)
+	wg.Add(2)
 	go func() {
 		defer wg.Done()
-		if err := serverHttp.Start(ctx); err != nil {
+		if err := serverHttpPublic.Start(ctx); err != nil {
+			logg.Error("failed to start http server: " + err.Error())
+			cancel()
+			return
+		}
+	}()
+	go func() {
+		defer wg.Done()
+		if err := serverHttpPrivate.Start(ctx); err != nil {
 			logg.Error("failed to start http server: " + err.Error())
 			cancel()
 			return

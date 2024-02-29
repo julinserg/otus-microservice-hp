@@ -35,7 +35,7 @@ func New(logger Logger, uriAuthService string, botMQ BotMQ) *SrvBot {
 }
 
 func (s *SrvBot) GetAuthRequestString() (string, error) {
-	req, err := http.NewRequest(http.MethodGet, s.uriAuthService+"/api/v1/auth/reqstring", nil)
+	req, err := http.NewRequest(http.MethodGet, s.uriAuthService+"/api/v1/auth-private/reqstring", nil)
 	if err != nil {
 		return "", fmt.Errorf("client: not create http request: %s\n", err)
 	}

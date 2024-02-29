@@ -167,7 +167,7 @@ func (s *SrvCloudStorage) getToken(chatId int64, testMode string) (string, error
 }
 
 func (s *SrvCloudStorage) getTokenFromAuthService(chatId int64) (string, error) {
-	req, err := http.NewRequest(http.MethodGet, s.uriAuthService+fmt.Sprintf("/api/v1/auth/token?chat_id=%d", chatId), nil)
+	req, err := http.NewRequest(http.MethodGet, s.uriAuthService+fmt.Sprintf("/api/v1/auth-private/token?chat_id=%d", chatId), nil)
 	if err != nil {
 		return "", fmt.Errorf("getToken: not create http request: %s\n", err)
 	}

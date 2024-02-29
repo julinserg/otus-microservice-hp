@@ -51,7 +51,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{bot_url}}/api/v1/bot-imitation/file?url=http://{{bot_url}}/images/LifeNewsMixImag-2005/LifeNewsMixImag-2005__090.jpg&chat_id=001&test_mode=highload_test",
+					"raw": "{{bot_url}}/api/v1/bot-imitation/file?url=http://{{image_url}}/images/LifeNewsMixImag-2005/LifeNewsMixImag-2005__090.jpg&chat_id=001&test_mode=highload_test",
 					"host": [
 						"{{bot_url}}"
 					],
@@ -64,7 +64,7 @@
 					"query": [
 						{
 							"key": "url",
-							"value": "http://{{bot_url}}/images/LifeNewsMixImag-2005/LifeNewsMixImag-2005__090.jpg"
+							"value": "http://{{image_url}}/images/LifeNewsMixImag-2005/LifeNewsMixImag-2005__090.jpg"
 						},
 						{
 							"key": "chat_id",
@@ -124,7 +124,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{bot_url}}/api/v1/bot-imitation/file?url=http://{{bot_url}}/images/LifeNewsMixImag-2005/LifeNewsMixImag-2005__089.jpg&chat_id=001&test_mode=highload_test",
+					"raw": "{{bot_url}}/api/v1/bot-imitation/file?url=http://{{image_url}}/images/LifeNewsMixImag-2005/LifeNewsMixImag-2005__089.jpg&chat_id=001&test_mode=highload_test",
 					"host": [
 						"{{bot_url}}"
 					],
@@ -137,7 +137,7 @@
 					"query": [
 						{
 							"key": "url",
-							"value": "http://{{bot_url}}/images/LifeNewsMixImag-2005/LifeNewsMixImag-2005__089.jpg"
+							"value": "http://{{image_url}}/images/LifeNewsMixImag-2005/LifeNewsMixImag-2005__089.jpg"
 						},
 						{
 							"key": "chat_id",
@@ -197,7 +197,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{bot_url}}/api/v1/bot-imitation/file?url=http://{{bot_url}}/images/LifeNewsMixImag-2005/LifeNewsMixImag-2005__088.jpg&chat_id=001&test_mode=highload_test",
+					"raw": "{{bot_url}}/api/v1/bot-imitation/file?url=http://{{image_url}}/images/LifeNewsMixImag-2005/LifeNewsMixImag-2005__088.jpg&chat_id=001&test_mode=highload_test",
 					"host": [
 						"{{bot_url}}"
 					],
@@ -210,7 +210,7 @@
 					"query": [
 						{
 							"key": "url",
-							"value": "http://{{bot_url}}/images/LifeNewsMixImag-2005/LifeNewsMixImag-2005__088.jpg"
+							"value": "http://{{image_url}}/images/LifeNewsMixImag-2005/LifeNewsMixImag-2005__088.jpg"
 						},
 						{
 							"key": "chat_id",
@@ -270,7 +270,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{bot_url}}/api/v1/bot-imitation/file?url=http://{{bot_url}}/images/LifeNewsMixImag-2005/LifeNewsMixImag-2005__087.jpg&chat_id=001&test_mode=highload_test",
+					"raw": "{{bot_url}}/api/v1/bot-imitation/file?url=http://{{image_url}}/images/LifeNewsMixImag-2005/LifeNewsMixImag-2005__087.jpg&chat_id=001&test_mode=highload_test",
 					"host": [
 						"{{bot_url}}"
 					],
@@ -283,7 +283,7 @@
 					"query": [
 						{
 							"key": "url",
-							"value": "http://{{bot_url}}/images/LifeNewsMixImag-2005/LifeNewsMixImag-2005__087.jpg"
+							"value": "http://{{image_url}}/images/LifeNewsMixImag-2005/LifeNewsMixImag-2005__087.jpg"
 						},
 						{
 							"key": "chat_id",
@@ -343,7 +343,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{bot_url}}/api/v1/bot-imitation/file?url=http://{{bot_url}}/images/LifeNewsMixImag-2005/LifeNewsMixImag-2005__086.jpg&chat_id=001&test_mode=highload_test",
+					"raw": "{{bot_url}}/api/v1/bot-imitation/file?url=http://{{image_url}}/images/LifeNewsMixImag-2005/LifeNewsMixImag-2005__086.jpg&chat_id=001&test_mode=highload_test",
 					"host": [
 						"{{bot_url}}"
 					],
@@ -356,7 +356,7 @@
 					"query": [
 						{
 							"key": "url",
-							"value": "http://{{bot_url}}/images/LifeNewsMixImag-2005/LifeNewsMixImag-2005__086.jpg"
+							"value": "http://{{image_url}}/images/LifeNewsMixImag-2005/LifeNewsMixImag-2005__086.jpg"
 						},
 						{
 							"key": "chat_id",
@@ -396,6 +396,11 @@
 	"variable": [
 		{
 			"key": "bot_url",
+			"value": "arch.homework",
+			"type": "string"
+		},
+		{
+			"key": "image_url",
 			"value": "arch.homework",
 			"type": "string"
 		}
